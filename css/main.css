@@ -142,3 +142,13 @@ a {
     width: 5vh;
     border-radius: 50%;
 }
+
+.nav-panelLoggedin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5vh;
+    gap: 20px;
+    list-style: none;
+    cursor: pointer;
+}

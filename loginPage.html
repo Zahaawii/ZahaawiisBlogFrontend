@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login page</title>
-  <link href="loginPage.css" rel="stylesheet">
+  <link href="/css/loginPage.css" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -13,24 +13,33 @@
 
 <h1 class="topName"> Zahaawii's blog </h1>
 <div class="loginBox">
-  <form action="">
-    <h1>Create userInfo</h1>
+  <form class="createUser">
+    <h1>Create User</h1>
     <div class="input-box">
       <label for="name">  </label>
-      <input type="text" name="Username-cred" id="name" placeholder="Username" required>
+      <input type="text" name="name" id="name" placeholder="Username" required>
       <i class="bx bxs-userInfo"></i>
     </div>
+      
+    <div class="input-box">
+      <label for="email"></label>
+      <input type="email" name="email" id="email" placeholder="Email" required>
+    </div>
+    
 
     <div class="input-box">
       <label for="password"></label>
-      <input type="password" name="userInfo-password" id="password" placeholder="Password" required>
+      <input type="password" name="password" id="password" placeholder="Password" required>
       <i class="bx bxs-lock-alt"></i>
     </div>
-    <div class="remember-forgot">
-      <label>
-        <input type="checkbox" Remember me> Remember me </label>
 
-      <a href="#"> Already created an userInfo?</a>
+
+    <div class="input-box">
+      <label for="photo"></label>
+      <input type="file" name="imgPath" id="addPhoto">
+    </div>
+    <div class="remember-forgot" style="justify-content: center;">
+      <a href="index.html"> Already signed up?</a>
     </div>
     <button type="submit" class="btn">Create account</button>
 
@@ -44,5 +53,53 @@
   </form>
 </div>
 
+<script>
+
+        let date = new Date().toISOString().slice(0,10);
+        const formUser = document.querySelector('.createUser')
+
+        formUser.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const fd = new FormData(formUser);
+            const file = fd.get("imgPath");
+            const user = {
+              name: fd.get("name"),
+              email: fd.get("email"),
+              password: fd.get("password"),
+              roles: "USER",
+              createdDate: date
+            };
+
+            try {
+
+              const createUserPost = await fetch ("http://localhost:8080/api/v1/users/createuser", {
+                method: "POST",
+                headers: {
+                  "Content-type": "application/json"
+                },
+                body: JSON.stringify(user)
+              });
+              if(!createUserPost.ok) throw new Error(`Create user failed: {createUserPost.status}$`);
+              const data1 = await createUserPost.text();
+              const userId = data1;
+
+
+              if(file && file.size > 0) {
+                const fileFd = new FormData();
+                fileFd.append("file", file);
+
+                const res2 = await fetch(`http://localhost:8080/api/v1/uploads/images/${userId}`, {
+                  method: "POST",
+                  body: fileFd,                  
+                });
+                if(!res2.ok) throw new Error(`Upload photo failed: ${res2.status}`);
+                window.location.replace("index.html");
+              }
+            } catch (err) {
+              console.error(err);
+            }
+        })
+</script>
 </body>
 </html>

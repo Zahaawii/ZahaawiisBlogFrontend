@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Frontpage (Dynamic)</title>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 
@@ -16,10 +16,11 @@
 
             <label for ="password"> </label>
             <input class="js_password" name="password" type="password" placeholder="password">
-            <button> submit </button>
+            <button type> submit </button>
         </form>
     </ul>
 </div>
+
 
 <div class="create-blog-post">
     <button type="submit" class="btn"><span class="plus-sign">&#43;</span></button>
@@ -41,109 +42,15 @@
                 <input class="js_category" type="text" name="category" id="form_category" placeholder="Add category">
             </div>
 
-            <button type="submit" class="submit-btn" onclick="
-    submitForm()"
-            >Create blog post</button>
+            <button type="submit" class="submit-btn">Create blog post</button>
         </form>
     </div>
 </div>
 
 <!-- Blog posts will be rendered here -->
 <div id="blog-posts-container"></div>
-
-<script>
-    const url = 'http://localhost:8080/api/v1/blog/getallblogpost';
-    const container = document.getElementById('blog-posts-container');
-    var date = new Date().toISOString().slice(0,10);
-
-    function createBlogBox(blog) {
-        return `
-    <div class="blog-section">
-        <div class="blog-box">
-            <div class="blog-userInfo-logo">
-                <img src="${blog.userInfo?.imgPath || 'default.jpeg'}">
-                <p>${blog.userInfo?.name || 'Unknown'}</p>
-            </div>
-            <div class="blog-post-subject">
-                <h2>${blog.subject}</h2>
-                <p>${blog.publishDate}</p>
-            </div>
-            <div class="blog-post-body">
-                <p>${blog.body}</p>
-            </div>
-            <div class="blog-interaction">
-                <div class="blog-likes-section">
-                    <ul>
-                        <li><a href="#" class="interaction">like</a></li>
-                        <li><a href="#" class="interaction">comment</a></li>
-                        <li><a href="#" class="interaction">share</a></li>
-                    </ul>
-                </div>
-                <div class="blog-see-all-comments">
-                    <p>this is a comment</p>
-                    <p>this is a comment</p>
-                    <p>this is a comment</p>
-                </div>
-                <div class="blog-add-comments">
-                    <label>
-                        <input type="text" placeholder="Add a comment here">
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-    `;
-    }
-
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            container.innerHTML = data.map(createBlogBox).join('');
-        })
-        .catch(err => {
-            container.innerHTML = '<p>Failed to load blog posts.</p>';
-            console.error(err);
-        });
-
-    document.querySelector(".btn").addEventListener("click", function(){
-        document.querySelector(".popup").classList.add("active");
-    });
-    document.querySelector(".popup .close-btn").addEventListener("click", function(){
-        document.querySelector(".popup").classList.remove("active");
-    });
-
-
-    function submitForm() {
-
-
-        const formEl = document.querySelector('.createblogpost');
-
-        formEl.addEventListener('submit', event => {
-            event.preventDefault();
-
-            const formData = new FormData(formEl);
-            formData.set('publishDate', date);
-            const data = Object.fromEntries(formData);
-
-            fetch('http://localhost:8080/api/blog/saveblogpost', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(res => res.json())
-                .then(data => console.log(data))
-                .catch(error => console.log(error))
-        });
-        alert("Blog post created")
-    };
-
-
-
-
-
-</script>
+<div id="status"></div>
+<script src="app.js"></script>
 
 </body>
 </html>
