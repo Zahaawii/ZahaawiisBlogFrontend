@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Frontpage (Dynamic)</title>
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 
@@ -16,11 +16,10 @@
 
             <label for ="password"> </label>
             <input class="js_password" name="password" type="password" placeholder="password">
-            <button type> submit </button>
+            <button> submit </button>
         </form>
     </ul>
 </div>
-
 
 <div class="create-blog-post">
     <button type="submit" class="btn"><span class="plus-sign">&#43;</span></button>
@@ -42,15 +41,20 @@
                 <input class="js_category" type="text" name="category" id="form_category" placeholder="Add category">
             </div>
 
-            <button type="submit" class="submit-btn">Create blog post</button>
+            <button type="submit" class="submit-btn" onclick="
+    submitForm()"
+            >Create blog post</button>
         </form>
     </div>
 </div>
 
 <!-- Blog posts will be rendered here -->
 <div id="blog-posts-container"></div>
-<div id="status"></div>
-<script src="app.js"></script>
+
+<script src="app.js">
+
+
+</script>
 
 </body>
 </html>

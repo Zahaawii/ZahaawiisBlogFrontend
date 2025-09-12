@@ -152,3 +152,8 @@ a {
     list-style: none;
     cursor: pointer;
 }
+
+.nav-panel img{
+    width: 7vh;
+    border-radius: 50%;
+}

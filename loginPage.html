@@ -55,51 +55,6 @@
 
 <script>
 
-        let date = new Date().toISOString().slice(0,10);
-        const formUser = document.querySelector('.createUser')
-
-        formUser.addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            const fd = new FormData(formUser);
-            const file = fd.get("imgPath");
-            const user = {
-              name: fd.get("name"),
-              email: fd.get("email"),
-              password: fd.get("password"),
-              roles: "USER",
-              createdDate: date
-            };
-
-            try {
-
-              const createUserPost = await fetch ("http://localhost:8080/api/v1/users/createuser", {
-                method: "POST",
-                headers: {
-                  "Content-type": "application/json"
-                },
-                body: JSON.stringify(user)
-              });
-              if(!createUserPost.ok) throw new Error(`Create user failed: {createUserPost.status}$`);
-              const data1 = await createUserPost.text();
-              const userId = data1;
-
-
-              if(file && file.size > 0) {
-                const fileFd = new FormData();
-                fileFd.append("file", file);
-
-                const res2 = await fetch(`http://localhost:8080/api/v1/uploads/images/${userId}`, {
-                  method: "POST",
-                  body: fileFd,                  
-                });
-                if(!res2.ok) throw new Error(`Upload photo failed: ${res2.status}`);
-                window.location.replace("index.html");
-              }
-            } catch (err) {
-              console.error(err);
-            }
-        })
-</script>
+  </script>
 </body>
 </html>
