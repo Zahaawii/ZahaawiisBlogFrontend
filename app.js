@@ -46,7 +46,7 @@ window.addEventListener("load", () => {
   const name = sessionStorage.getItem("username");
   if (token) {
     console.log("User already logged in");
-        document.querySelector(".nav-panel").innerHTML = `<a href="userprofile.html"> <img src="images/${name}.jpeg"></a>`;
+        document.querySelector(".nav-panel").innerHTML = `<a href="userprofile.html" target="_blank"> <img src="images/${name}.jpeg"></a>`;
   }
 });
 
@@ -68,7 +68,7 @@ function getUsernameByToken() {
     <div class="blog-section">
         <div class="blog-box">
             <div class="blog-userInfo-logo">
-                <img src="images/${blog.userInfo?.imgPath || 'default.jpeg'}">
+                <a href="userprofile.html" target="_blank"> <img src="images/${blog.userInfo?.imgPath || 'default.jpeg'}">
                 <p>${blog.userInfo?.name || 'Unknown'}</p>
             </div>
             <div class="blog-post-subject">

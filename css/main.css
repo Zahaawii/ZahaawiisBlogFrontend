@@ -3,6 +3,7 @@
 body {
     background-color: #FAFAFA;
     color: cornflowerblue;
+    margin: 0;
 }
 
 a {
@@ -155,5 +156,31 @@ a {
 
 .nav-panel img{
     width: 7vh;
+    border-radius: 100%;
+    margin-top: 2vh;
+    margin-right: 5vh;
+}
+
+.nav-panel-userprofile{
+    display: flex;
+    border-bottom: 1px solid cornflowerblue;
+    margin: 30px;
+}
+
+.nav-bar-userprofile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+    list-style: none;
+    cursor: pointer;
+    flex-direction: row;
+}
+
+.nav-panel-userprofile img {
+    width: 5vh;
     border-radius: 50%;
+    margin-right: 2vh;
+    margin-bottom: 1vh; 
+    margin-left: auto;
 }
