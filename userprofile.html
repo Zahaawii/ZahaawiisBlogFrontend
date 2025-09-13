@@ -1,22 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/main.css">
+    <script src="https://kit.fontawesome.com/3277b84a7d.js" crossorigin="anonymous"></script>
     <title>Profile</title>
 </head>
-<body>
-    
-    <div class ="nav-panel-userprofile">
 
-        <ul class="nav-bar-userprofile"> 
+<body>
+
+    <div class="nav-panel-userprofile">
+
+        <ul class="nav-bar-userprofile">
             <li>Overview</li>
             <li>Post</li>
-            <li>Settings</li>
+            <li>Random</li>
         </ul>
-    <img src="images/default.jpeg" alt="Profile Picture" class="icon-picture">
+        <img src="images/default.jpeg" alt="Profile Picture" class="icon-picture">
     </div>
 
+    <main>
+
+        <section class="userprofile">
+            <aside class="userprofile-sidebar">
+                <img src="images/default.jpeg" alt="profile picture" class="userprofile-avatar">
+                <h2 class="userprofile-name"> Username </h2>
+                <p class="userprofile-bio">This is the user description</p>
+                <p class="userprofile-joined"> 2025-01-25 </p>
+
+                <div class="userprofile-stats">
+                    <div>
+                        <span class="stat-label">Post</span>
+                        <span class="stat-value"> 25 </span>
+                    </div>
+                    <div>
+                        <span class="stat-label"> Test </span>
+                        <span class="stat-value"> 25</span>
+                    </div>
+                    <div>
+                        <span class="stat-label"> Test </span>
+                        <span class="stat-value"> 25</span>
+                    </div>    
+                </div>
+            </aside>
+
+            <div class="userprofile-content">
+                <header class="userprofile-header">
+                    <h3 class="userprofile-section-title"> All users post </h3>
+                </header>
+
+                <article class="post">
+                    <header class="post-header">
+                        <h2 class="post-title"> subject </h2>
+                        <time class="post-date" datetime="${blog.publishDate}"> dato </time>
+                    </header>
+
+                    <div class="post-body">
+                        <p> hej </p>
+                    </div>
+                    <footer class="post-footer">
+                        <nav class="post-actions">
+                            <button class="abtn btn-ghost"><i class="fa-regular fa-thumbs-up"></i></button>
+                            <button class="abtn btn-ghost"><i class="fa-regular fa-comments"></i></button>
+                            <button class="abtn btn-ghost"><i class="fa-regular fa-share-from-square"></i></button>
+                        </nav>
+                        <div class="post-comments">
+                            <p class="comment">this is a comment</p>
+                            <p class="comment">this is a comment</p>
+                            <p class="comment">this is a comment</p>
+                        </div>
+
+                        <form class="post-add-comment">
+                            <label class="sr-only" for="comment-input-1"></label>
+                            <input id="comment-input-1" type="text" placeholder="Add a comment…" />
+                            <button class="btn">Send</button>
+                        </form>
+                    </footer>
+                </article>
+            </div>
+
+        </section>
+    </main>
+
 </body>
+
 </html>
