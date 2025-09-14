@@ -21,7 +21,7 @@
         <img src="images/default.jpeg" alt="Profile Picture" class="icon-picture">
     </div>
 
-    <main>
+    <main id="test">
 
         <section class="userprofile">
             <aside class="userprofile-sidebar">
@@ -46,44 +46,14 @@
                 </div>
             </aside>
 
-            <div class="userprofile-content">
-                <header class="userprofile-header">
-                    <h3 class="userprofile-section-title"> All users post </h3>
-                </header>
-
-                <article class="post">
-                    <header class="post-header">
-                        <h2 class="post-title"> subject </h2>
-                        <time class="post-date" datetime="${blog.publishDate}"> dato </time>
-                    </header>
-
-                    <div class="post-body">
-                        <p> hej </p>
-                    </div>
-                    <footer class="post-footer">
-                        <nav class="post-actions">
-                            <button class="abtn btn-ghost"><i class="fa-regular fa-thumbs-up"></i></button>
-                            <button class="abtn btn-ghost"><i class="fa-regular fa-comments"></i></button>
-                            <button class="abtn btn-ghost"><i class="fa-regular fa-share-from-square"></i></button>
-                        </nav>
-                        <div class="post-comments">
-                            <p class="comment">this is a comment</p>
-                            <p class="comment">this is a comment</p>
-                            <p class="comment">this is a comment</p>
-                        </div>
-
-                        <form class="post-add-comment">
-                            <label class="sr-only" for="comment-input-1"></label>
-                            <input id="comment-input-1" type="text" placeholder="Add a comment…" />
-                            <button class="btn">Send</button>
-                        </form>
-                    </footer>
-                </article>
+            <div id="userprofilecontainer" class="userprofile-content">
+      
             </div>
 
         </section>
     </main>
 
+    <script src="userprofile.js"></script>
 </body>
 
 </html>
