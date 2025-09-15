@@ -61,6 +61,7 @@ a {
     position: static;
     top: 16px;
     height: fit-content;
+    min-height: 70vh;
 }
 
 .home-userprofile-avatar {
@@ -129,6 +130,9 @@ a {
     .home-userprofile-avatar {
         width: 96px;
         height: 96px;
+    }
+    .userprofile-sidebar {
+        min-height: unset;
     }
 }
 
