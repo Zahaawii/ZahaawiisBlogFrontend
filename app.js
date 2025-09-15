@@ -46,7 +46,7 @@ window.addEventListener("load", () => {
   const name = sessionStorage.getItem("username");
   if (token) {
     console.log("User already logged in");
-        document.querySelector(".nav-panel").innerHTML = `<a href="userprofile.html" target="_blank"> <img src="images/${name}.jpeg"></a>`;
+        document.querySelector(".nav-panel").innerHTML = `<a href="userprofile.html?id=${name}" target="_blank"> <img src="images/${name}.jpeg"></a>`;
   }
 });
 
@@ -68,8 +68,8 @@ function getUsernameByToken() {
     <div class="blog-section">
         <div class="blog-box">
             <div class="blog-userInfo-logo">
-                <a href="userprofile.html" target="_blank"> <img src="images/${blog.userInfo?.imgPath || 'default.jpeg'}">
-                <p>${blog.userInfo?.name || 'Unknown'}</p>
+                <a href="userprofile.html?id=${blog.author?.name}" target="_blank"> <img src="images/${blog.author?.imgPath || 'default.jpeg'}"></a>
+                <p>${blog.author?.name || 'Unknown'}</p>
             </div>
             <div class="blog-post-subject">
                 <h2>${blog.subject}</h2>
@@ -106,6 +106,7 @@ function getUsernameByToken() {
         .then(res => res.json())
         .then(data => {
             container.innerHTML = data.map(createBlogBox).join('');
+            console.log(data);
         })
         .catch(err => {
             container.innerHTML = `<p>Failed to load blog posts ${err}.</p>`;
