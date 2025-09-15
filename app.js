@@ -5,6 +5,7 @@ const saveblogUrl = 'http://localhost:8080/api/v1/blog/saveblogpost';
 const loginUrl = "http://localhost:8080/api/v1/users/auth/login";
 const getAllBlogPostUrl = 'http://localhost:8080/api/v1/blog/getallblogpost'
 const createUser = "http://localhost:8080/api/v1/users/createuser"
+const findCommentsUrl = "http://localhost:8080/api/v1/comments/getcomment/"
 
 form.addEventListener("submit", async(event) => {
     event.preventDefault();
@@ -65,7 +66,7 @@ function getUsernameByToken() {
 
     function createBlogBox(blog) {
         return `
-    <div class="blog-section">
+    <div class="blog-section" data-blog-id="${blog.blogId}">
         <div class="blog-box">
             <div class="blog-userInfo-logo">
                 <a href="userprofile.html?id=${blog.author?.name}" target="_blank"> <img src="images/${blog.author?.imgPath || 'default.jpeg'}"></a>
@@ -86,11 +87,7 @@ function getUsernameByToken() {
                         <li><a href="#" class="interaction">share</a></li>
                     </ul>
                 </div>
-                <div class="blog-see-all-comments">
-                    <p>this is a comment</p>
-                    <p>this is a comment</p>
-                    <p>this is a comment</p>
-                </div>
+                <div class="blog-see-all-comments"></div>
                 <div class="blog-add-comments">
                     <label>
                         <input type="text" placeholder="Add a comment here">
@@ -107,6 +104,28 @@ function getUsernameByToken() {
         .then(data => {
             container.innerHTML = data.map(createBlogBox).join('');
             console.log(data);
+
+            document.querySelectorAll('.blog-section').forEach(section => {
+                const blogId = section.dataset.blogId;
+                const commentsContainer = section.querySelector('.blog-see-all-comments');
+
+                fetch(`${findCommentsUrl}${blogId}`) 
+                .then( res => res.json())
+                .then(comments => {
+                    if(!comments || comments.length === 0) {
+                        commentsContainer.innerHTML ="";
+                        return;
+                    }
+                    commentsContainer.innerHTML = comments
+                    .map(c => `<p>${c.comment}</p>`)
+                    .join('');
+                })
+                .catch(err => {
+                    commentsContainer.innerHTML = `<p> Could not load comments </p>`
+                    console.error(err);
+                }
+                )
+            })
         })
         .catch(err => {
             container.innerHTML = `<p>Failed to load blog posts ${err}.</p>`;
@@ -149,5 +168,3 @@ function getUsernameByToken() {
         });
     };
 
-
-submitForm();

@@ -49,7 +49,29 @@
 </div>
 
 <!-- Blog posts will be rendered here -->
-<div id="blog-posts-container"></div>
+ <main class="frontpage-container">
+                <aside class="userprofile-sidebar">
+                <img src="images/default.jpeg" alt="profile picture" class="userprofile-avatar">
+                <h2 class="userprofile-name"> ${box.name} </h2>
+                <p class="userprofile-bio">This is the user description</p>
+                <p class="userprofile-joined">${box.createdDate}</p>
+
+                <div class="userprofile-stats">
+                    <div>
+                        <span class="stat-label">Post</span>
+                        <span class="stat-value"> 25 </span>
+                    </div>
+                    <div>
+                        <span class="stat-label"> Test </span>
+                        <span class="stat-value"> 25</span>
+                    </div>
+                    <div>
+                        <span class="stat-label"> Test </span>
+                        <span class="stat-value"> 25</span>
+                    </div>    
+                </div>
+            </aside><div id="blog-posts-container"></div>
+</main>
 
 <script src="app.js">
 
