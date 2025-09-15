@@ -82,16 +82,18 @@ function getUsernameByToken() {
             <div class="blog-interaction">
                 <div class="blog-likes-section">
                     <ul>
-                        <li><a href="#" class="interaction">like</a></li>
-                        <li><a href="#" class="interaction">comment</a></li>
-                        <li><a href="#" class="interaction">share</a></li>
+                        <li><a href="#" class="interaction"><i class="fa-regular fa-thumbs-up"></i></a></li>
+                        <li><a href="#" class="interaction"><i class="fa-regular fa-comments"></i></a></li>
+                        <li><a href="#" class="interaction"><i class="fa-regular fa-share-from-square"></i></a></li>
                     </ul>
                 </div>
                 <div class="blog-see-all-comments"></div>
                 <div class="blog-add-comments">
-                    <label>
-                        <input type="text" placeholder="Add a comment here">
-                    </label>
+                             <form class="post-add-comment">
+                            <label class="sr-only" for="comment-input-1"></label>
+                            <input id="comment-input-1" type="text" placeholder="Add a comment…" />
+                            <button class="btn">Send</button>
+                        </form>
                 </div>
             </div>
         </div>

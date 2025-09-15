@@ -86,4 +86,33 @@
     };
 
 
+/*
+.blog-section {
+    margin-right: 40%;
+    margin-left: 5%;
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 2em;
+    margin-top: 5%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+}
 
+.blog-user-logo {
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    border: 1px solid cornflowerblue;
+}
+
+.blog-likes-section ul {
+    border: 1px solid cornflowerblue;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    list-style: none;
+}
+/*

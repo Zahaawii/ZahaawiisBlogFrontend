@@ -38,22 +38,220 @@ a {
 }
 
 .frontpage-container {
-    display: flex;
-    gap: var(--gap);
-    max-width: var(--maxw);
     margin: 32px auto;
-    padding: 0 16;
+    padding: 0 16px;
+    max-width: var(--maxw);
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    grid-template-areas: "main sidebar";
+    gap: var(--gap);
 }
 
-.blog-section {
-    width: 280px;
-    flex: 1 1 auto;
+#blog-posts-container {
+    grid-area: main;
     min-width: 0;
 }
 
-.stuff-container {
-    flex: 1 1 280px;
+.home-userprofile-sidebar {
+    grid-area: sidebar;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    position: static;
+    top: 16px;
+    height: fit-content;
 }
+
+.home-userprofile-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: blocK;
+    margin: 0 auto 12px;
+}
+
+.home-userprofile-name {
+    margin: 0 0 6px; 
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.home-userprofile-bio {
+    margin: 0 0 6px;
+    color: var(--text);
+}
+
+.home-userprofile-joined {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.home-userprofile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.home-userprofile-stats > div {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+.home-stat-label {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.home-stat-value {
+    display: blocK;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+@media (max-width: 900px) {
+    .frontpage-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+        "sidebar"
+        "main";
+    }
+    .home-userprofile-sidebar {
+        position: static;
+        top: auto;
+    }
+    .home-userprofile-avatar {
+        width: 96px;
+        height: 96px;
+    }
+}
+
+.blog-section {
+    margin-bottom: 16px;
+}
+
+.blog-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.blog-userInfo-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.blog-userInfo-logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+
+}
+
+.blog-userInfo-logo p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.blog-post-subject {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    margin-bottom: 8px;
+}
+
+.blog-post-subject h2{
+    margin: 0;
+    font-size: 20px;
+    word-break: break-word;
+}
+
+.blog-post-subject p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.blog-post-body p {
+    margin: 0 0 8px;
+}
+
+.blog-interaction {
+    margin-top: 10px;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+}
+
+.blog-likes-section ul {
+    list-style: none;
+    margin: 0 0 8px;
+    padding: 0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.blog-likes-section .interaction {
+    display: inline-block;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 10px;
+    color: var(--accent);
+}
+
+.blog-likes-section .interaction:hover { 
+    border-color: var(--accent); 
+    color: var(--accent); 
+}
+
+.blog-see-all-comments:empty {display:none}
+.blog-see-all-comments p {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin: 0;
+}
+
+.blog-see-all-comments {
+    display: grid;
+    gap: 20px;
+}
+
+.blog-add-comments {
+    margin-top: 20px;
+}
+.blog-add-comments input {
+    width: 100%;
+    background: transparent;
+    color: var(--accent);
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin: 10 0 6px;
+    outline: none;
+}
+
+.blog-add-comments input:focus {
+    border-color: var(--accent);
+}
+
 
 .create-blog-post {
     display: flex;
