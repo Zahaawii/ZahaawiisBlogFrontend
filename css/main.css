@@ -271,7 +271,7 @@ a {
     color: var(--accent);
     border-radius: 10px;
     padding: 8px 10px;
-    margin: 10 0 6px;
+    margin: 10px 0 6px;
     outline: none;
 }
 
@@ -284,6 +284,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
+    
 }
 
 .btn .plus-sign {
@@ -302,6 +303,10 @@ a {
     transition: transform 0.2s;
 }
 
+.blog-userInfo-logo .fa-solid {
+    margin-left: auto;
+}
+
 .btn:active {
     transform: scale(0.95);
 }
@@ -317,12 +322,26 @@ a {
     transform: translate(-50%, -50%) scale(1.25);
     width: 500px;
     padding: 20px 30px;
-    background: #FFF;
+    background: var(--border);
     box-shadow: 2px 2px 5px 5px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     transition: top 0ms ease-in-out 200ms,
     opacity 200ms ease-in-out 0ms,
     transform 200ms ease-in-out 0ms;
+}
+
+.popup input, textarea{
+    background: rgba(255, 255, 255,0.02);
+    border: 1px solid cornflowerblue;
+    border-radius: 10px;
+    padding: 8px 10px;
+    color: var(--accent);
+    font-size: 14px;
+    margin: 5px;
+}
+
+.popup button {
+    margin: 10px;
 }
 
 .popup.active {
@@ -340,6 +359,15 @@ a {
     margin-right: 8px;
 }
 
+.post-comments .fa-solid {
+    float: right;
+    margin-top: 5px;
+    margin-right: 8px;
+}
+
+.post .fa-solid {
+    float: right;
+}
 
 .popup .close-btn {
     position: absolute;
@@ -402,6 +430,7 @@ a {
 }
 
 .nav-panel-userprofile{
+    visibility: hidden;
     display: flex;
     border-bottom: 1px solid cornflowerblue;
     margin: 30px;
@@ -455,12 +484,17 @@ a {
     margin-bottom: 16px;
 }
 
-.userprofile-name .userprofile-bio  {
+.userprofile-name{
     margin: 0 0 8px;
     font-size: 22px;
     font-weight: 700;
     color: var(--accent)
 }
+
+ .userprofile-bio {
+    margin: 0 0 8px;
+    color: var(--text);
+ }
 
 .userprofile-joined {
   margin: 0 0 16px;
@@ -490,7 +524,7 @@ a {
 
 .stat-label {
     display: blocK;
-    color: var (--muted);
+    color: var(--muted);
     font-size: 12px;
 }
 
@@ -545,8 +579,11 @@ a {
     white-space: nowrap;
 }
 
-.post-body p {
+.post-body pre {
+    font: 15px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
     margin: 0 0 8px;
+    word-break: break-word;
+    white-space: pre-wrap;
 }
 
 .post-footer {
@@ -600,7 +637,9 @@ a {
     margin-bottom: 10px;
 }
 
-.comment {
+
+
+.post-comments p{
     background: rgba(255, 255, 255,0.02);
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -639,7 +678,7 @@ a {
     .userprofile {
         grid-template-columns: 1fr;
     }
-    .userprofie-sidebar {
+    .userprofile-sidebar {
         position: static;
         top: auto;
         display: grid;

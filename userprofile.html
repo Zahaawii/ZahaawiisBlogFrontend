@@ -11,6 +11,20 @@
 
 <body>
 
+    <div class="nav-bar">
+        <ul class="nav-panel">
+            <li><a href="loginPage.html">Create account</a></li>
+            <form class="login">
+                <label for="username"></label>
+                <input class="js_username" type="text" name="username" placeholder="username">
+
+                <label for="password"> </label>
+                <input class="js_password" name="password" type="password" placeholder="password">
+                <button class=""> login </button>
+            </form>
+        </ul>
+    </div>
+
     <div class="nav-panel-userprofile">
 
         <ul class="nav-bar-userprofile">
@@ -18,7 +32,33 @@
             <li>Post</li>
             <li>Random</li>
         </ul>
-        <img src="images/default.jpeg" alt="Profile Picture" class="icon-picture">
+        <!-- <img src="images/default.jpeg" alt="Profile Picture" class="icon-picture"> !-->
+    </div>
+
+    <div class="create-blog-post">
+        <button type="button" class="btn"><span class="plus-sign">&#43;</span></button>
+        <div class="popup" id="popup">
+            <div class="close-btn">&times;</div>
+            <form class="createblogpost">
+                <div class="add_subject">
+                    <label for="subject"></label>
+                    <input class="js_subject" type="text" name="subject" id="form_subject" placeholder="Add subject">
+                </div>
+
+                <div class="add_body">
+                    <label for="body"></label>
+                    <textarea class="js_body" id="body" name="body" rows="30" cols="50"></textarea>
+                </div>
+
+                <div class="add_category">
+                    <label for="category"></label>
+                    <input class="js_category" type="text" name="category" id="form_category"
+                        placeholder="Add category">
+                </div>
+
+                <button type="submit" class="submit-btn" onclick="submitForm()">Create blog post</button>
+            </form>
+        </div>
     </div>
 
     <main id="test">
@@ -26,12 +66,12 @@
         <section id="userprofileinfo" class="userprofile">
 
 
-        <div id="userprofilecontainer" class="userprofile-content"></div>
+            <div id="userprofilecontainer" class="userprofile-content"></div>
 
         </section>
     </main>
 
-    <script src="userprofile.js"></script>
+    <script src="userprofile.js" defer></script>
 </body>
 
 </html>

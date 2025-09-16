@@ -8,6 +8,7 @@ const createUser = "http://localhost:8080/api/v1/users/createuser"
 const findCommentsUrl = "http://localhost:8080/api/v1/comments/getcomment/"
 const addCommentsUrl = "http://localhost:8080/api/v1/comments/addcomment"
 const deleteCommentsUrl = "http://localhost:8080/api/v1/comments/delete/"
+const deleteBlogUrl = 'http://localhost:8080/api/v1/blog/deletepost/'
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -68,15 +69,17 @@ var date = new Date().toISOString().slice(0, 10);
 
 function createBlogBox(blog) {
     return `
-    <div class="blog-section" data-blog-id="${blog.blogId}">
+    <div class="blog-section" data-blog-id="${blog.blogId}" id="${blog.blogId}">
         <div class="blog-box">
             <div class="blog-userInfo-logo">
                 <a href="userprofile.html?id=${blog.author?.name}" target="_blank"> <img src="images/${blog.author?.imgPath || 'default.jpeg'}"></a>
                 <p>${blog.author?.name || 'Unknown'}</p>
+                <i onclick="deleteBlog(${blog.blogId})" style="cursor: pointer;" class="fa-solid fa-trash"></i>
+
             </div>
             <div class="blog-post-subject">
                 <h2>${blog.subject}</h2>
-                <p>${blog.publishDate}</p>
+                <p>${blog.publishDate || ""}</p>
             </div>
             <div class="blog-post-body">
                 <pre>${blog.body}</pre>
@@ -110,6 +113,8 @@ function createBlogBox(blog) {
 fetch(getAllBlogPostUrl)
     .then(res => res.json())
     .then(data => {
+        console.log(data);
+  
         container.innerHTML = data.map(createBlogBox).join('');
 
         document.querySelectorAll('.blog-section').forEach(section => {
@@ -175,6 +180,25 @@ function deleteComment(id) {
         .then(res => res.text())
         .then(data => {
             console.log("kommentar slettet: " + data)
+        })
+        .catch(error => console.error("Kunne ikke slette: " + error));
+}
+
+function deleteBlog(id) {
+    const token = getToken();
+    console.log(document.getElementById(id));
+    fetch(deleteBlogUrl + id, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(id)
+    })
+        .then(res => res.text())
+        .then(data => {
+            document.getElementById(id).remove();
+            console.log("Blog post deleted " + data);
         })
         .catch(error => console.error("Kunne ikke slette: " + error));
 }
