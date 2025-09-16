@@ -194,6 +194,7 @@ a {
 
 .blog-post-body p {
     margin: 0 0 8px;
+    word-break: break-word;
 }
 
 .blog-interaction {
