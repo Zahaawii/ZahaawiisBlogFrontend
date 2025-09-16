@@ -79,7 +79,7 @@ function createBlogBox(blog) {
                 <p>${blog.publishDate}</p>
             </div>
             <div class="blog-post-body">
-                <p>${blog.body}</p>
+                <pre>${blog.body}</pre>
             </div>
             <div class="blog-interaction">
                 <div class="blog-likes-section">
@@ -124,7 +124,7 @@ fetch(getAllBlogPostUrl)
                         return;
                     }
                     commentsContainer.innerHTML = comments
-                        .map(c => `<p>${c.comment}<a href="${deleteCommentsUrl}${c.commentId}"><i class="fa-solid fa-trash"></i></a></p>`)
+                        .map(c => `<p>${c.username}: <br> ${c.comment}<i onclick="deleteComment(${c.commentId})" style="cursor: pointer;" class="fa-solid fa-trash"></i></p>`)
                         .join('');
                         console.log(comments);
                 })
@@ -162,7 +162,22 @@ document.querySelector(".popup .close-btn").addEventListener("click", function (
     document.querySelector(".popup").classList.remove("active");
 });
 
-
+function deleteComment(id) {
+    const token = getToken();
+    fetch(deleteCommentsUrl + id, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(id)
+    })
+        .then(res => res.text())
+        .then(data => {
+            console.log("kommentar slettet: " + data)
+        })
+        .catch(error => console.error("Kunne ikke slette: " + error));
+}
 
 function addComment(event) {
     event.preventDefault();
