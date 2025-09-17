@@ -1,25 +1,22 @@
-const statusEl = document.getElementById("status");
-const uploadPost = document.querySelector(".submit-btn");
 const form = document.querySelector(".login");
 const navCenter = document.querySelector(".nav-center");
 const userPanel = document.querySelector(".user-panel");
 const avatarLink = document.querySelector(".avatar-link");
 const avatarImg = document.querySelector(".avatar");
 const logoutBtn  = document.querySelector(".logout");
-const popupEl   = document.querySelector('#popup');            // popup container
-const formEl    = document.querySelector('.createblogpost');   // formularen
-const openBtn   = document.querySelector('[data-open="post"]');// åbn-knap
-const closeBtn  = popupEl?.querySelector('[data-close]');      // luk-knap (x)
+const popupEl   = document.querySelector('#popup');            
+const formEl    = document.querySelector('.createblogpost');  
+const openBtn   = document.querySelector('[data-open="post"]');
+const closeBtn  = popupEl?.querySelector('[data-close]');      
 const submitBtn = formEl?.querySelector('[type="submit"]');
+const container = document.getElementById('blog-posts-container');
 const saveblogUrl = 'http://localhost:8080/api/v1/blog/saveblogpost';
 const loginUrl = "http://localhost:8080/api/v1/users/auth/login";
 const getAllBlogPostUrl = 'http://localhost:8080/api/v1/blog/getallblogpost'
-const createUser = "http://localhost:8080/api/v1/users/createuser"
 const findCommentsUrl = "http://localhost:8080/api/v1/comments/getcomment/"
 const addCommentsUrl = "http://localhost:8080/api/v1/comments/addcomment"
 const deleteCommentsUrl = "http://localhost:8080/api/v1/comments/delete/"
 const deleteBlogUrl = 'http://localhost:8080/api/v1/blog/deletepost/'
-
 
 
 logoutBtn?.addEventListener("click", logout);
@@ -62,49 +59,6 @@ window.addEventListener("storage", (e) => {
     }
 });
 
-form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const creds = Object.fromEntries(new FormData(form));
-
-    try {
-        const res = await fetch(loginUrl, {
-            method: "POST",
-            headers: {
-                "Content-type": "application/json"
-            },
-            body: JSON.stringify(creds)
-        });
-
-        if (!res.ok) throw new Error(`Login failed: ${res.status}`);
-
-        const { accessToken, username } = await res.json();
-        if (!accessToken) throw new Error("Intet token i respons");
-
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("username", username);
-        console.log(accessToken);
-
-
-        if (localStorage.getItem("accessToken") != null) {
-            console.log(document.querySelector(".navPanel"));
-            document.querySelector(".nav-panel").innerHTML = `Welcome to my page ${getUsernameByToken()}`;
-            const test = document.querySelector(".nav-panel");
-            test.classList.add("nav-panelLoggedin");
-        }
-    } catch (err) {
-        console.log(err);
-    }
-});
-
-window.addEventListener("load", () => {
-    const token = localStorage.getItem("accessToken");
-    const name = localStorage.getItem("username");
-    if (token) {
-        console.log("User already logged in");
-        //document.querySelector(".nav-panel").innerHTML = `<a href="userprofile.html?id=${name}" target="_blank"> <img src="images/${name}.jpeg"></a>`;
-    }
-});
 
 
 function getToken() {
@@ -137,7 +91,7 @@ function renderAfterAuth() {
             avatarLink.href = `userprofile.html?id=${encodeURIComponent(name)}`;
         }
         if(avatarImg) {
-            avatarImg.src = `images/${encodeURIComponent(name)}.jpeg`;
+            avatarImg.src = `images/${encodeURIComponent(name)}.jpeg || 'default.jpeg'`;
             avatarImg.alt = name;
         }
 
@@ -150,7 +104,6 @@ function renderAfterAuth() {
 }
 
 
-const container = document.getElementById('blog-posts-container');
 var date = new Date().toISOString().slice(0, 10);
 
 function createBlogBox(blog) {
@@ -215,7 +168,7 @@ fetch(getAllBlogPostUrl)
                         return;
                     }
                     commentsContainer.innerHTML = comments
-                        .map(c => `<p>${c.username}: <br> ${c.comment}<i onclick="deleteComment(${c.commentId})" style="cursor: pointer;" class="fa-solid fa-trash"></i></p>`)
+                        .map(c => `<p id="${c.commentId}">${c.username}: <br> ${c.comment}<i onclick="deleteComment(${c.commentId})" style="cursor: pointer;" class="fa-solid fa-trash"></i></p>`)
                         .join('');
                         console.log(comments);
                 })
@@ -246,42 +199,32 @@ fetch(getAllBlogPostUrl)
         console.error(err);
     });
 
-document.querySelector(".btn").addEventListener("click", function () {
-    document.querySelector(".popup").classList.add("active");
-});
-document.querySelector(".popup .close-btn").addEventListener("click", function () {
-    document.querySelector(".popup").classList.remove("active");
-});
-
 function deleteComment(id) {
-    confirm("Are you sure?")
+    if(!confirm("Are you sure?")) return;
     const token = getToken();
     fetch(deleteCommentsUrl + id, {
         method: 'DELETE',
         headers: {
             'Authorization': 'Bearer ' + token,
-            'Content-type': 'application/json'
         },
-        body: JSON.stringify(id)
     })
         .then(res => res.text())
         .then(data => {
+            document.getElementById(id).remove();
             console.log("kommentar slettet: " + data)
         })
         .catch(error => console.error("Kunne ikke slette: " + error));
 }
 
 function deleteBlog(id) {
-    confirm("Are you sure?")
+    if(!confirm("Are you sure?")) return;
     const token = getToken();
     console.log(document.getElementById(id));
     fetch(deleteBlogUrl + id, {
         method: 'DELETE',
         headers: {
             'Authorization': 'Bearer ' + token,
-            'Content-type': 'application/json'
         },
-        body: JSON.stringify(id)
     })
         .then(res => res.text())
         .then(data => {
@@ -344,7 +287,7 @@ function closePopup() {
   if (!popupEl) return;
   popupEl.classList.remove('active');
   document.removeEventListener('keydown', escHandler);
-  formEl?.reset(); // ryd felter når popup lukkes
+  formEl?.reset();
 }
 
 function escHandler(e) {
@@ -369,7 +312,7 @@ formEl?.addEventListener('submit', async (e) => {
     if (!token) throw new Error('Du er ikke logget ind');
 
     const fd = new FormData(formEl);
-    fd.set('publishDate', date); // din eksisterende date-variabel
+    fd.set('publishDate', date);
     const payload = Object.fromEntries(fd);
 
     const res = await fetch(saveblogUrl, {
@@ -382,7 +325,6 @@ formEl?.addEventListener('submit', async (e) => {
     });
 
     if (!res.ok) {
-      // læs fejl som tekst (kun én gang!)
       const msg = await res.text();
       throw new Error(msg || `Fejl: ${res.status}`);
     }
@@ -390,7 +332,6 @@ formEl?.addEventListener('submit', async (e) => {
     const data = await res.json();
     console.log('Gemte:', data);
 
-    // succes → luk popup
     closePopup();
 
   } catch (err) {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Login page</title>
@@ -12,57 +13,112 @@
 
 <body>
 
-<h1 class="topName"> Zahaawii's blog </h1>
-<div class="loginBox">
-  <form class="createUser">
-    <h1>Create User</h1>
-    <div class="input-box">
-      <label for="name">  </label>
-      <input type="text" name="name" id="name" placeholder="Username" required>
-      <i class="fa-solid fa-user"></i>
-      <i class="bx bxs-userInfo"></i>
-    </div>
-      
-    <div class="input-box">
-      <label for="email"></label>
-      <input type="email" name="email" id="email" placeholder="Email" required>
-      <i class="fa-solid fa-envelope"></i>
-    </div>
-    
+  <h1 class="topName"> Zahaawii's blog </h1>
+  <div class="loginBox">
+    <form class="createUser">
+      <h1>Create User</h1>
+      <div class="input-box">
+        <label for="name"> </label>
+        <input type="text" name="name" id="name" placeholder="Username" required>
+        <i class="fa-solid fa-user"></i>
+        <i class="bx bxs-userInfo"></i>
+      </div>
 
-    <div class="input-box">
-      <label for="password"></label>
-      <input type="password" name="password" id="password" placeholder="Password" required>
-      <i class="bx bxs-lock-alt"></i>
-    </div>
+      <div class="input-box">
+        <label for="email"></label>
+        <input type="email" name="email" id="email" placeholder="Email" required>
+        <i class="fa-solid fa-envelope"></i>
+      </div>
 
 
-    <div class="input-box">
-      <label for="addPhoto" class="file-upload"></label>
-      <input type="file" name="imgPath" id="addPhoto">
-      <i class="fa-solid fa-image"></i>
-    </div>
+      <div class="input-box">
+        <label for="password"></label>
+        <input type="password" name="password" id="password" placeholder="Password" required>
+        <i class="bx bxs-lock-alt"></i>
+      </div>
 
 
-    <div class="remember-forgot" style="justify-content: center;">
-      <a href="index.html"> Already signed up?</a>
-    </div>
-    <button type="submit" class="btn">Create account</button>
+      <div class="input-box">
+        <label for="addPhoto" class="file-upload"></label>
+        <input type="file" name="imgPath" id="addPhoto">
+        <i class="fa-solid fa-image"></i>
+      </div>
 
-    <div class="icons">
-      <a href="#" class="fa fa-apple"></a>
-      <a href="https://github.com/Zahaawii" target="_blank" class="fa fa-github"></a>
-      <a href="#" class="fa fa-google"></a>
-      <a href="#" class="fa fa-reddit"></a>
-      <a href="#" class="fa fa-facebook"></a>
-      <a href="#" class="fa fa-instagram"></a>
 
-    </div>
-  </form>
-</div>
+      <div class="remember-forgot" style="justify-content: center;">
+        <a href="index.html"> Already signed up?</a>
+      </div>
+      <button type="submit" class="btn">Create account</button>
 
-<script>
+      <div class="icons">
+        <a href="#" class="fa fa-apple"></a>
+        <a href="https://github.com/Zahaawii" target="_blank" class="fa fa-github"></a>
+        <a href="#" class="fa fa-google"></a>
+        <a href="#" class="fa fa-reddit"></a>
+        <a href="#" class="fa fa-facebook"></a>
+        <a href="#" class="fa fa-instagram"></a>
+
+      </div>
+    </form>
+  </div>
+
+  <script>
+
+    const btn = document.querySelector('.btn');
+    const form = document.querySelector('.createUser');
+    console.log(form);
+
+    btn.addEventListener("click", async (event) => {
+      event.preventDefault();
+
+      const fd = new FormData(form);
+      const file = fd.get("imgPath");
+      const hasFile = file && file.size > 0;
+
+      const payload = {
+        name: fd.get('name'),
+        email: fd.get('email'),
+        password: fd.get('password'),
+        role: 'USER'
+      };
+
+
+      try {
+        const res = await fetch("http://localhost:8080/api/v1/users/createuser", {
+          method: "POST",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error(`Failed creating user: ${res.status}`);
+
+        const {id, accessToken, name } = await res.json();
+        if (!accessToken) throw new Error("Failed to log user in by default");
+
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("username", name);
+        console.log(id);
+
+        if (hasFile) {
+          const fileFd = new FormData();
+          fileFd.append('file', file);
+          const res2 = await fetch(`http://localhost:8080/api/v1/uploads/images/${id}`, {
+            method: "POST",
+            headers: {
+              'Authorization': 'Bearer ' + accessToken,
+            },
+            body: fileFd,
+          });
+          if (!imgRes.ok) throw new Error(`Image failed: ${imgRes.status}`);
+        }
+
+        window.location.replace('http://127.0.0.1:5501/');
+      } catch (err) {
+        console.log(err);
+      }
+    });
 
   </script>
 </body>
+
 </html>
