@@ -209,7 +209,7 @@ function submitForm() {
 
     const formEl = document.querySelector('.createblogpost');
 
-    formEl.addEventListener('button', event => {
+    formEl.addEventListener('submit', event => {
         event.preventDefault();
 
         const token = getToken()

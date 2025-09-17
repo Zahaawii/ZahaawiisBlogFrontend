@@ -5,6 +5,7 @@
   <title>Login page</title>
   <link href="/css/loginPage.css" rel="stylesheet">
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/3277b84a7d.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
@@ -18,12 +19,14 @@
     <div class="input-box">
       <label for="name">  </label>
       <input type="text" name="name" id="name" placeholder="Username" required>
+      <i class="fa-solid fa-user"></i>
       <i class="bx bxs-userInfo"></i>
     </div>
       
     <div class="input-box">
       <label for="email"></label>
       <input type="email" name="email" id="email" placeholder="Email" required>
+      <i class="fa-solid fa-envelope"></i>
     </div>
     
 
@@ -35,9 +38,12 @@
 
 
     <div class="input-box">
-      <label for="photo"></label>
+      <label for="addPhoto" class="file-upload"></label>
       <input type="file" name="imgPath" id="addPhoto">
+      <i class="fa-solid fa-image"></i>
     </div>
+
+
     <div class="remember-forgot" style="justify-content: center;">
       <a href="index.html"> Already signed up?</a>
     </div>
@@ -49,6 +55,8 @@
       <a href="#" class="fa fa-google"></a>
       <a href="#" class="fa fa-reddit"></a>
       <a href="#" class="fa fa-facebook"></a>
+      <a href="#" class="fa fa-instagram"></a>
+
     </div>
   </form>
 </div>
