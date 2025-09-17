@@ -829,3 +829,32 @@ a {
         margin-top: 8px;
     }
 }
+
+.single-blog-post-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.single-blog-post-image img {
+    margin: 50px;
+    object-fit: cover;
+}
+
+.single-blog-post-subject {
+    font-size: 30px;
+    color: cornflowerblue;
+    border-bottom: 1px solid cornflowerblue;
+}
+
+.single-blog-post-body {
+    font: 15px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    margin: 0 0 8px;
+    word-break: break-word;
+    white-space: pre-wrap;
+    box-sizing: border-box;
+    width: 70vh;
+    border: var(--border);
+    background-color: var(--bg);
+}
