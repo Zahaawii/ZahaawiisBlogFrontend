@@ -11,55 +11,68 @@
 
 <body>
 
-    <div class="nav-bar">
-        <ul class="nav-panel">
-            <li><a href="loginPage.html">Create account</a></li>
-            <form class="login">
-                <label for="username"></label>
-                <input class="js_username" type="text" name="username" placeholder="username">
+    <header class="top-bar">
 
-                <label for="password"> </label>
-                <input class="js_password" name="password" type="password" placeholder="password">
-                <button class=""> login </button>
+        <nav class="nav-center" aria-label="User navigation">
+            <ul class="nav-items">
+                <li><a href="#">Overview</a></li>
+                <li><a href="#"> Post</a></li>
+                <li><a href="#"> Random</a></li>
+            </ul>
+        </nav>
+
+        <div class="nav-right">
+            <form class="login" autocomplete="on">
+                <a href="" class="create-account"> Create account </a>
+                <input class="js_username" type="text" name="username" placeholder="username" required>
+                <input class="js_password" type="password" name="password" placeholder="password" required>
+                <button type="submit"><i class="fa-solid fa-right-to-bracket"></i></button>
             </form>
-        </ul>
-    </div>
 
-    <div class="nav-panel-userprofile">
-
-        <ul class="nav-bar-userprofile">
-            <li>Overview</li>
-            <li>Post</li>
-            <li>Random</li>
-        </ul>
-        <!-- <img src="images/default.jpeg" alt="Profile Picture" class="icon-picture"> !-->
-    </div>
-
-    <div class="create-blog-post">
-        <button type="button" class="btn"><span class="plus-sign">&#43;</span></button>
-        <div class="popup" id="popup">
-            <div class="close-btn">&times;</div>
-            <form class="createblogpost">
-                <div class="add_subject">
-                    <label for="subject"></label>
-                    <input class="js_subject" type="text" name="subject" id="form_subject" placeholder="Add subject">
-                </div>
-
-                <div class="add_body">
-                    <label for="body"></label>
-                    <textarea class="js_body" id="body" name="body" rows="30" cols="50"></textarea>
-                </div>
-
-                <div class="add_category">
-                    <label for="category"></label>
-                    <input class="js_category" type="text" name="category" id="form_category"
-                        placeholder="Add category">
-                </div>
-
-                <button type="submit" class="submit-btn" onclick="submitForm()">Create blog post</button>
-            </form>
+            <div class="user-panel">
+                <button class="logout" type="button"><i class="fa-solid fa-right-from-bracket"></i></button>
+                <a class="avatar-link" href="#" target="_blank" rel="noopener" aria-label="Profile">
+                    <img class="avatar" src="images/default.jpeg" alt="profile">
+                </a>
+            </div>
         </div>
-    </div>
+
+    </header>
+
+
+
+<div class="create-blog-post">
+  <button type="button" class="btn" data-open="post" aria-haspopup="dialog" aria-controls="popup">
+    <span class="plus-sign" aria-hidden="true">&#43;</span>
+    <span class="sr-only">Create blog post</span>
+  </button>
+
+  <div class="popup" id="popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <button type="button" class="close-btn" data-close aria-label="Close">&times;</button>
+
+    <form class="createblogpost" autocomplete="off" novalidate>
+      <h2 id="popup-title" class="sr-only">Create blog post</h2>
+
+      <div class="add_subject">
+        <label for="form_subject" class="sr-only">Subject</label>
+        <input class="js_subject" type="text" name="subject" id="form_subject" placeholder="Add subject" required>
+      </div>
+
+      <div class="add_body">
+        <label for="form_body" class="sr-only">Body</label>
+        <textarea class="js_body" id="form_body" name="body" rows="12" cols="50" placeholder="Write your post..." required></textarea>
+      </div>
+
+      <div class="add_category">
+        <label for="form_category" class="sr-only">Category</label>
+        <input class="js_category" type="text" name="category" id="form_category" placeholder="Add category">
+      </div>
+
+      <button type="submit" class="submit-btn">Create blog post</button>
+    </form>
+  </div>
+</div>
+
 
     <main id="test">
 

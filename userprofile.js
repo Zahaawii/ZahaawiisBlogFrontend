@@ -1,6 +1,16 @@
 const urlParameter = new URLSearchParams(location.search);
 const username = urlParameter.get("id");
 const form = document.querySelector(".login");
+const navCenter = document.querySelector(".nav-center");
+const userPanel = document.querySelector(".user-panel");
+const avatarLink = document.querySelector(".avatar-link");
+const avatarImg = document.querySelector(".avatar");
+const popupEl   = document.querySelector('#popup');            // popup container
+const formEl    = document.querySelector('.createblogpost');   // formularen
+const openBtn   = document.querySelector('[data-open="post"]');// åbn-knap
+const closeBtn  = popupEl?.querySelector('[data-close]');      // luk-knap (x)
+const submitBtn = formEl?.querySelector('[type="submit"]');
+const logoutBtn  = document.querySelector(".logout");
 const userprofilBlogecontainer = document.getElementById('userprofilecontainer');
 const userprofileInfo = document.getElementById('userprofileinfo');
 const deleteCommentsUrl = "http://localhost:8080/api/v1/comments/delete/"
@@ -8,75 +18,13 @@ const deleteBlogUrl = 'http://localhost:8080/api/v1/blog/deletepost/'
 const loginUrl = "http://localhost:8080/api/v1/users/auth/login";
 
 
-
-function getToken() {
-    return sessionStorage.getItem("accessToken");
-}
-
-function getUsernameByToken() {
-    return sessionStorage.getItem("username");
-}
-
-
-
-function createUserprofileBlogBox(blog) {
-    return `
-
-                <article class="post" data-blog-id="${blog.blogId}" id="${blog.blogId}">
-                    <header class="post-header">
-                        <h2 class="post-title"> ${blog.subject} </h2>
-                        <time class="post-date"> ${blog.publishDate} </time>
-                    </header>
-                    <i onclick="deleteBlog(${blog.blogId})" style="cursor: pointer;" class="fa-solid fa-trash"></i>
-
-
-                    <div class="post-body">
-                        <pre> ${blog.body} </pre>
-                    </div>
-                    <footer class="post-footer">
-                        <nav class="post-actions">
-                            <button class="abtn btn-ghost"><i class="fa-regular fa-thumbs-up"></i></button>
-                            <button class="abtn btn-ghost"><i class="fa-regular fa-comments"></i></button>
-                            <button class="abtn btn-ghost"><i class="fa-regular fa-share-from-square"></i></button>
-                        </nav>
-                        <div class="post-comments"></div>
-
-                        <form class="post-add-comment">
-                            <label class="sr-only" for="comment-input-1"></label>
-                            <input id="comment-input-1" type="text" placeholder="Add a comment…" />
-                            <button class="btn">Send</button>
-                        </form>
-                    </footer>
-                </article>
-            
-            `;
-}
-
-function createUserProfileBox(box) {
-    return `
-                <aside class="userprofile-sidebar">
-                <img src="images/default.jpeg" alt="profile picture" class="userprofile-avatar">
-                <h2 class="userprofile-name"> ${box.name} </h2>
-                <p class="userprofile-bio">This is the user description</p>
-                <p class="userprofile-joined">${box.createdDate}</p>
-
-                <div class="userprofile-stats">
-                    <div>
-                        <span class="stat-label">Post</span>
-                        <span class="stat-value"> 25 </span>
-                    </div>
-                    <div>
-                        <span class="stat-label"> Test </span>
-                        <span class="stat-value"> 25</span>
-                    </div>
-                    <div>
-                        <span class="stat-label"> Test </span>
-                        <span class="stat-value"> 25</span>
-                    </div>    
-                </div>
-            </aside>
-            `;
-}
+window.addEventListener("load", () => {
+    const token = localStorage.getItem("accessToken");
+    const name = localStorage.getItem("username");
+    if (token) {
+        console.log("User already logged in");
+    }
+});
 
 fetch("http://localhost:8080/api/v1/blog/getbyusername/" + username)
     .then(res => res.json())
@@ -121,7 +69,27 @@ fetch("http://localhost:8080/api/v1/users/getuserbyname/" + username)
         console.error(err);
     });
 
+
+
+function getToken() {
+    return localStorage.getItem("accessToken");
+}
+
+function getUsernameByToken() {
+    return localStorage.getItem("username");
+}
+
+function logout() {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("username");
+    form?.reset();
+    renderAfterAuth();
+}
+
+logoutBtn?.addEventListener("click", logout);
+
 function deleteComment(id) {
+    confirm("Are you sure?");
     const token = getToken();
     fetch(deleteCommentsUrl + id, {
         method: 'DELETE',
@@ -139,6 +107,7 @@ function deleteComment(id) {
 }
 
 function deleteBlog(id) {
+    confirm("Are you sure?");
     const token = getToken();
     console.log(document.getElementById(id));
     fetch(deleteBlogUrl + id, {
@@ -157,7 +126,7 @@ function deleteBlog(id) {
         .catch(error => console.error("Kunne ikke slette: " + error));
 }
 
-form.addEventListener("submit", async (event) => {
+form?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const creds = Object.fromEntries(new FormData(form));
@@ -176,60 +145,173 @@ form.addEventListener("submit", async (event) => {
         const { accessToken, username } = await res.json();
         if (!accessToken) throw new Error("Intet token i respons");
 
-        sessionStorage.setItem("accessToken", accessToken);
-        sessionStorage.setItem("username", username);
-        console.log(accessToken);
-
-
-        if (sessionStorage.getItem("accessToken") != null) {
-            console.log(document.querySelector(".navPanel"));
-            document.querySelector(".nav-panel").innerHTML = `Welcome to my page ${getUsernameByToken()}`;
-            document.querySelector(".nav-panel-userprofile").style.visibility = "visible";
-            const test = document.querySelector(".nav-panel");
-            test.classList.add("nav-panelLoggedin");
-        }
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("username", username);
+        renderAfterAuth();
     } catch (err) {
         console.log(err);
     }
 });
 
-window.addEventListener("load", () => {
-    const token = sessionStorage.getItem("accessToken");
-    const name = sessionStorage.getItem("username");
-    if (token) {
-        console.log("User already logged in");
-        document.querySelector(".nav-panel").innerHTML = `<a href="userprofile.html?id=${name}" target="_blank"> <img src="images/${name}.jpeg"></a>`;
-        document.querySelector(".nav-panel-userprofile").style.visibility = "visible";
+document.addEventListener("DOMContentLoaded", () => {
+    renderAfterAuth();
+});
 
-
+window.addEventListener("storage", (e) => {
+    if(e.key === "accessToken" || e.key === "username") {
+        renderAfterAuth();
     }
 });
 
-function submitForm() {
+function renderAfterAuth() {
+    const token = getToken();
+    const name = getUsernameByToken();
 
-    const formEl = document.querySelector('.createblogpost');
+    const isLoggedIn = Boolean(token && name);
+    
+    if(token && name) {
+        if(form) form.style.display = "none";
+        if(userPanel) userPanel.style.display = "flex";
 
-    formEl.addEventListener('submit', event => {
-        event.preventDefault();
+        if(avatarLink) {
+            avatarLink.href = `userprofile.html?id=${encodeURIComponent(name)}`;
+        }
+        if(avatarImg) {
+            avatarImg.src = `images/${encodeURIComponent(name)}.jpeg`;
+            avatarImg.alt = name;
+        }
 
-        const token = getToken()
-        if (!token) throw new Error("Du er ikke logget ind")
-        const formData = new FormData(formEl);
-        formData.set('publishDate', date);
-        const data = Object.fromEntries(formData);
+        if(navCenter) navCenter.style.visibility = "visible"; 
+    } else {
+        if(form) form.style.display = "flex";
+        if(userPanel) userPanel.style.display = "none";
+        if(navCenter) navCenter.style.visibility = "hidden";
+    }
+}
 
-        fetch(saveblogUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(error => console.log(error))
+function createUserprofileBlogBox(blog) {
+    return `
+
+                <article class="post" data-blog-id="${blog.blogId}" id="${blog.blogId}">
+                    <header class="post-header">
+                        <h2 class="post-title"> ${blog.subject} </h2>
+                        <time class="post-date"> ${blog.publishDate} </time>
+                    </header>
+                    <i onclick="deleteBlog(${blog.blogId})" style="cursor: pointer;" class="fa-solid fa-trash"></i>
+
+
+                    <div class="post-body">
+                        <pre> ${blog.body} </pre>
+                    </div>
+                    <footer class="post-footer">
+                        <nav class="post-actions">
+                            <button class="abtn btn-ghost"><i class="fa-regular fa-thumbs-up"></i></button>
+                            <button class="abtn btn-ghost"><i class="fa-regular fa-comments"></i></button>
+                            <button class="abtn btn-ghost"><i class="fa-regular fa-share-from-square"></i></button>
+                        </nav>
+                        <div class="post-comments"></div>
+
+                        <form class="post-add-comment">
+                            <label class="sr-only" for="comment-input-1"></label>
+                            <input id="comment-input-1" type="text" placeholder="Add a comment…" />
+                            <button class="btn">Send</button>
+                        </form>
+                    </footer>
+                </article>
+            
+            `;
+}
+
+function createUserProfileBox(box) {
+    return `
+                <aside class="userprofile-sidebar">
+                <img src="images/${box.imgPath || 'default.jpeg'}" alt="profile picture" class="userprofile-avatar">
+                <h2 class="userprofile-name"> ${box.name} </h2>
+                <p class="userprofile-bio">This is the user description</p>
+                <p class="userprofile-joined">${box.createdDate}</p>
+
+                <div class="userprofile-stats">
+                    <div>
+                        <span class="stat-label">Post</span>
+                        <span class="stat-value"> 25 </span>
+                    </div>
+                    <div>
+                        <span class="stat-label"> Test </span>
+                        <span class="stat-value"> 25</span>
+                    </div>
+                    <div>
+                        <span class="stat-label"> Test </span>
+                        <span class="stat-value"> 25</span>
+                    </div>    
+                </div>
+            </aside>
+            `;
+}
+
+function openPopup() {
+  if (!popupEl) return;
+  popupEl.classList.add('active');
+  document.addEventListener('keydown', escHandler);
+}
+
+function closePopup() {
+  if (!popupEl) return;
+  popupEl.classList.remove('active');
+  document.removeEventListener('keydown', escHandler);
+  formEl?.reset(); // ryd felter når popup lukkes
+}
+
+function escHandler(e) {
+  if (e.key === 'Escape') closePopup();
+}
+
+openBtn?.addEventListener('click', (e) => {
+  e.preventDefault();
+  openPopup();
+});
+
+closeBtn?.addEventListener('click', () => closePopup());
+
+formEl?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  try {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+
+    const token = getToken();
+    if (!token) throw new Error('Du er ikke logget ind');
+
+    const fd = new FormData(formEl);
+    fd.set('publishDate', date); // din eksisterende date-variabel
+    const payload = Object.fromEntries(fd);
+
+    const res = await fetch(saveblogUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
     });
-};
 
+    if (!res.ok) {
+      // læs fejl som tekst (kun én gang!)
+      const msg = await res.text();
+      throw new Error(msg || `Fejl: ${res.status}`);
+    }
 
+    const data = await res.json();
+    console.log('Gemte:', data);
+
+    // succes → luk popup
+    closePopup();
+
+  } catch (err) {
+    console.error(err);
+    alert(err.message || 'Noget gik galt');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Create blog post';
+  }
+});

@@ -8,52 +8,93 @@
 </head>
 <body>
 
-<div class="nav-bar">
-    <ul class="nav-panel">
-        <li><a href="loginPage.html">Create account</a></li>
-        <form class="login">
-            <label for="username"></label>
-            <input class ="js_username" type="text" name="username" placeholder="username">
 
-            <label for ="password"> </label>
-            <input class="js_password" name="password" type="password" placeholder="password">
-            <button class=""> login </button>
-        </form>
-    </ul>
-</div>
+    <header class="top-bar">
+
+        <nav class="nav-center" aria-label="User navigation">
+            <ul class="nav-items">
+                <li><a href="#">Overview</a></li>
+                <li><a href="#"> Post</a></li>
+                <li><a href="#"> Random</a></li>
+            </ul>
+        </nav>
+
+        <div class="nav-right">
+            <form class="login" autocomplete="on">
+                <input class="js_username" type="text" name="username" placeholder="username" required>
+                <input class="js_password" type="password" name="password" placeholder="password" required>
+                <a href="loginPage.html" class="create-account"> Create account </a>
+                <button type="submit">login</button>
+            </form>
+
+            <div class="user-panel">
+                <button class="logout" type="button"><i class="fa-solid fa-right-from-bracket"></i></button>
+                <a class="avatar-link" href="#" target="_blank" rel="noopener" aria-label="Profile">
+                    <img class="avatar" src="images/default.jpeg" alt="profile">
+                </a>
+            </div>
+        </div>
+
+    </header>
+
 
 <div class="create-blog-post">
-    <button type="submit" class="btn"><span class="plus-sign">&#43;</span></button>
-    <div class="popup" id="popup">
-        <div class="close-btn">&times;</div>
-        <form class="createblogpost">
-            <div class="add_subject">
-                <label for="subject"></label>
-                <input class="js_subject" type="text" name="subject" id="form_subject" placeholder="Add subject">
-            </div>
+  <button type="button" class="btn" data-open="post" aria-haspopup="dialog" aria-controls="popup">
+    <span class="plus-sign" aria-hidden="true">&#43;</span>
+    <span class="sr-only">Create blog post</span>
+  </button>
 
-            <div class ="add_body">
-                <label for ="body"></label>
-                <textarea class = `.js_body` id="body" name="body" rows="30" cols="50"></textarea>
-            </div>
+  <div class="popup" id="popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <button type="button" class="close-btn" data-close aria-label="Close">&times;</button>
 
-            <div class="add_category">
-                <label for="category"></label>
-                <input class="js_category" type="text" name="category" id="form_category" placeholder="Add category">
-            </div>
+    <form class="createblogpost" autocomplete="off" novalidate>
+      <h2 id="popup-title" class="sr-only">Create blog post</h2>
 
-            <button type="submit" class="submit-btn" onclick="
-    submitForm()"
-            >Create blog post</button>
-        </form>
-    </div>
+      <div class="add_subject">
+        <label for="form_subject" class="sr-only">Subject</label>
+        <input class="js_subject" type="text" name="subject" id="form_subject" placeholder="Add subject" required>
+      </div>
+
+      <div class="add_body">
+        <label for="form_body" class="sr-only">Body</label>
+        <textarea class="js_body" id="form_body" name="body" rows="12" cols="50" placeholder="Write your post..." required></textarea>
+      </div>
+
+      <div class="add_category">
+        <label for="form_category" class="sr-only">Category</label>
+        <input class="js_category" type="text" name="category" id="form_category" placeholder="Add category">
+      </div>
+
+      <button type="submit" class="submit-btn">Create blog post</button>
+    </form>
+  </div>
 </div>
+
 
  <main class="frontpage-container">
                 <aside class="home-userprofile-sidebar">
-                <h2 class="home-userprofile-name"> tekst her </h2>
-                <p class="home-userprofile-bio">tekst her</p>
-                <p class="home-userprofile-joined">tekst her</p>
+                <h2 class="home-userprofile-name"> Welcome to my blog </h2>
+                <p class="home-userprofile-bio">Created by Zahaawii</p>
+                <pre class="home-userprofile-joined">
+Hi everybody! 
+
+My name is Zahaa or you can call me Zahaawii as it is my go to alias.
+
+I have created this blog page as an idea that came to my mind. It has been created with the methods I know and have learned about.
+
+I created this web app with Spring, Java, JavaScript, MYSQL, HTML and CSS. This is what I've learned so far.
+
+The techonologies that have been used are REST api, JWT Token, SQL and I am about to try to host it on a virtual machine with docker.
+
+The next steps is 
+
+1) to try to implement docker on a Ubuntu server where I will try to open it up for the world to see how it works.
+
+2) Try to implement function so only users created the post can delete and add stuff.
+
+3) Implement a logging system so everything gets logged.
+
+Afterwards I will try to keep adding new features to see how far I've come. I have been thinking about websocket and try to implement a chat function</pre>
 
             </aside><div id="blog-posts-container"></div>
 </main>

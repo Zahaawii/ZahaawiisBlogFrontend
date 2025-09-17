@@ -1,6 +1,16 @@
-const form = document.querySelector(".login");
 const statusEl = document.getElementById("status");
 const uploadPost = document.querySelector(".submit-btn");
+const form = document.querySelector(".login");
+const navCenter = document.querySelector(".nav-center");
+const userPanel = document.querySelector(".user-panel");
+const avatarLink = document.querySelector(".avatar-link");
+const avatarImg = document.querySelector(".avatar");
+const logoutBtn  = document.querySelector(".logout");
+const popupEl   = document.querySelector('#popup');            // popup container
+const formEl    = document.querySelector('.createblogpost');   // formularen
+const openBtn   = document.querySelector('[data-open="post"]');// åbn-knap
+const closeBtn  = popupEl?.querySelector('[data-close]');      // luk-knap (x)
+const submitBtn = formEl?.querySelector('[type="submit"]');
 const saveblogUrl = 'http://localhost:8080/api/v1/blog/saveblogpost';
 const loginUrl = "http://localhost:8080/api/v1/users/auth/login";
 const getAllBlogPostUrl = 'http://localhost:8080/api/v1/blog/getallblogpost'
@@ -9,6 +19,48 @@ const findCommentsUrl = "http://localhost:8080/api/v1/comments/getcomment/"
 const addCommentsUrl = "http://localhost:8080/api/v1/comments/addcomment"
 const deleteCommentsUrl = "http://localhost:8080/api/v1/comments/delete/"
 const deleteBlogUrl = 'http://localhost:8080/api/v1/blog/deletepost/'
+
+
+
+logoutBtn?.addEventListener("click", logout);
+
+
+form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const creds = Object.fromEntries(new FormData(form));
+
+    try {
+        const res = await fetch(loginUrl, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(creds)
+        });
+
+        if (!res.ok) throw new Error(`Login failed: ${res.status}`);
+
+        const { accessToken, username } = await res.json();
+        if (!accessToken) throw new Error("Intet token i respons");
+
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("username", username);
+        renderAfterAuth();
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    renderAfterAuth();
+});
+
+window.addEventListener("storage", (e) => {
+    if(e.key === "accessToken" || e.key === "username") {
+        renderAfterAuth();
+    }
+});
 
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -29,12 +81,12 @@ form.addEventListener("submit", async (event) => {
         const { accessToken, username } = await res.json();
         if (!accessToken) throw new Error("Intet token i respons");
 
-        sessionStorage.setItem("accessToken", accessToken);
-        sessionStorage.setItem("username", username);
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("username", username);
         console.log(accessToken);
 
 
-        if (sessionStorage.getItem("accessToken") != null) {
+        if (localStorage.getItem("accessToken") != null) {
             console.log(document.querySelector(".navPanel"));
             document.querySelector(".nav-panel").innerHTML = `Welcome to my page ${getUsernameByToken()}`;
             const test = document.querySelector(".nav-panel");
@@ -46,21 +98,55 @@ form.addEventListener("submit", async (event) => {
 });
 
 window.addEventListener("load", () => {
-    const token = sessionStorage.getItem("accessToken");
-    const name = sessionStorage.getItem("username");
+    const token = localStorage.getItem("accessToken");
+    const name = localStorage.getItem("username");
     if (token) {
         console.log("User already logged in");
-        document.querySelector(".nav-panel").innerHTML = `<a href="userprofile.html?id=${name}" target="_blank"> <img src="images/${name}.jpeg"></a>`;
+        //document.querySelector(".nav-panel").innerHTML = `<a href="userprofile.html?id=${name}" target="_blank"> <img src="images/${name}.jpeg"></a>`;
     }
 });
 
 
 function getToken() {
-    return sessionStorage.getItem("accessToken");
+    return localStorage.getItem("accessToken");
 }
 
 function getUsernameByToken() {
-    return sessionStorage.getItem("username");
+    return localStorage.getItem("username");
+}
+
+function logout() {
+    localStorage.removeItem("accessToken")
+    localStorage.removeItem("username");
+    form?.reset();
+    renderAfterAuth();
+}
+
+
+function renderAfterAuth() {
+    const token = getToken();
+    const name = getUsernameByToken();
+
+    const isLoggedIn = Boolean(token && name);
+    
+    if(token && name) {
+        if(form) form.style.display = "none";
+        if(userPanel) userPanel.style.display = "flex";
+
+        if(avatarLink) {
+            avatarLink.href = `userprofile.html?id=${encodeURIComponent(name)}`;
+        }
+        if(avatarImg) {
+            avatarImg.src = `images/${encodeURIComponent(name)}.jpeg`;
+            avatarImg.alt = name;
+        }
+
+        if(navCenter) navCenter.style.visibility = "visible"; 
+    } else {
+        if(form) form.style.display = "flex";
+        if(userPanel) userPanel.style.display = "none";
+        if(navCenter) navCenter.style.visibility = "hidden";
+    }
 }
 
 
@@ -168,6 +254,7 @@ document.querySelector(".popup .close-btn").addEventListener("click", function (
 });
 
 function deleteComment(id) {
+    confirm("Are you sure?")
     const token = getToken();
     fetch(deleteCommentsUrl + id, {
         method: 'DELETE',
@@ -185,6 +272,7 @@ function deleteComment(id) {
 }
 
 function deleteBlog(id) {
+    confirm("Are you sure?")
     const token = getToken();
     console.log(document.getElementById(id));
     fetch(deleteBlogUrl + id, {
@@ -246,30 +334,70 @@ function addComment(event) {
         .catch(error => console.error("fejl ved kommentar: ", error));
 }
 
-function submitForm() {
+function openPopup() {
+  if (!popupEl) return;
+  popupEl.classList.add('active');
+  document.addEventListener('keydown', escHandler);
+}
 
-    const formEl = document.querySelector('.createblogpost');
+function closePopup() {
+  if (!popupEl) return;
+  popupEl.classList.remove('active');
+  document.removeEventListener('keydown', escHandler);
+  formEl?.reset(); // ryd felter når popup lukkes
+}
 
-    formEl.addEventListener('submit', event => {
-        event.preventDefault();
+function escHandler(e) {
+  if (e.key === 'Escape') closePopup();
+}
 
-        const token = getToken()
-        if (!token) throw new Error("Du er ikke logget ind")
-        const formData = new FormData(formEl);
-        formData.set('publishDate', date);
-        const data = Object.fromEntries(formData);
+openBtn?.addEventListener('click', (e) => {
+  e.preventDefault();
+  openPopup();
+});
 
-        fetch(saveblogUrl, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(error => console.log(error))
+closeBtn?.addEventListener('click', () => closePopup());
+
+formEl?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  try {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Saving...';
+
+    const token = getToken();
+    if (!token) throw new Error('Du er ikke logget ind');
+
+    const fd = new FormData(formEl);
+    fd.set('publishDate', date); // din eksisterende date-variabel
+    const payload = Object.fromEntries(fd);
+
+    const res = await fetch(saveblogUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
     });
-};
 
+    if (!res.ok) {
+      // læs fejl som tekst (kun én gang!)
+      const msg = await res.text();
+      throw new Error(msg || `Fejl: ${res.status}`);
+    }
+
+    const data = await res.json();
+    console.log('Gemte:', data);
+
+    // succes → luk popup
+    closePopup();
+
+  } catch (err) {
+    console.error(err);
+    alert(err.message || 'Noget gik galt');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Create blog post';
+  }
+});
