@@ -91,7 +91,7 @@ function renderAfterAuth() {
             avatarLink.href = `userprofile.html?id=${encodeURIComponent(name)}`;
         }
         if(avatarImg) {
-            avatarImg.src = `images/${encodeURIComponent(name)}.jpeg || 'default.jpeg'`;
+            avatarImg.src = `images/${encodeURIComponent(name)}.jpeg`;
             avatarImg.alt = name;
         }
 
