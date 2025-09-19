@@ -41,12 +41,15 @@
 <div class ="single-blog-post-container">  
 
     <div class="single-blog-post-image">
-        <img src="images/roadmap.png">
+        <img src="images/roadmap2.png" width="1000px">
     </div>
 
     <div class="single-blog-post-subject">
         <h3>  </h3> 
     </div>
+           <div class="single-blog-post-date">
+            <time class="singe-blog-date"></time>
+        </div>
 
     <div class="single-blog-post-author">
     <p> Author: zahaawii </p>
@@ -105,17 +108,24 @@ Nemo ipsam magnam accusamus laborum illum pariatur, sint nobis tempore aliquam e
 
     <script>
 
+        const urlParameter = new URLSearchParams(location.search);
+        const blogId = urlParameter.get("id");
+        console.log(blogId);
+
         const subject = document.querySelector('.single-blog-post-subject');
         const author = document.querySelector('single-blog-post-author');
-        const body = document.querySelector('single-blog-post-body');
+        const blogPostBody = document.querySelector('.single-blog-post-body');
+        const date = document.querySelector('.singe-blog-date');
 
-            fetch('http://localhost:8080/api/v1/blog/getbyid/552')
+            fetch('http://localhost:8080/api/v1/blog/getbyid/' + blogId)
             .then(res => {
                 return res.json();
             })
             .then(data => {
-                subject.innerHTML = data.subject;
                 console.log(data);
+                subject.textContent = data.subject;
+                blogPostBody.textContent = data.body;
+                date.textContent = data.publishDate;
             })
             .catch(err => {
                 console.log(err);
