@@ -10,6 +10,8 @@ const openBtn   = document.querySelector('[data-open="post"]');
 const closeBtn  = popupEl?.querySelector('[data-close]');      
 const submitBtn = formEl?.querySelector('[type="submit"]');
 const container = document.getElementById('blog-posts-container');
+const createBlogPostBtn = document.querySelector('.btn');
+const postBar = document.querySelector(".post-nav-bar");
 const saveblogUrl = 'http://localhost:8080/api/v1/blog/saveblogpost';
 const loginUrl = "http://localhost:8080/api/v1/users/auth/login";
 const getAllBlogPostUrl = 'http://localhost:8080/api/v1/blog/getallblogpost'
@@ -48,6 +50,7 @@ form?.addEventListener("submit", async (event) => {
         console.log(err);
     }
 });
+
 
 document.addEventListener("DOMContentLoaded", () => {
     renderAfterAuth();
@@ -99,7 +102,9 @@ function renderAfterAuth() {
     } else {
         if(form) form.style.display = "flex";
         if(userPanel) userPanel.style.display = "none";
-        if(navCenter) navCenter.style.visibility = "hidden";
+        //if(navCenter) navCenter.style.visibility = "hidden";
+        if(postBar) postBar.style.display = "none";
+        if(createBlogPostBtn) createBlogPostBtn.style.visibility = "none";
     }
 }
 
@@ -112,8 +117,12 @@ function createBlogBox(blog) {
         <div class="blog-box">
             <div class="blog-userInfo-logo">
                 <a href="userprofile.html?id=${blog.author?.name}" target="_blank"> <img src="images/${blog.author?.imgPath || 'default.jpeg'}"></a>
-                <p>${blog.author?.name || 'Unknown'}</p>
-                <i onclick="deleteBlog(${blog.blogId})" style="cursor: pointer;" class="fa-solid fa-trash"></i>
+                <p data-blog-name=${blog.author?.name}>${blog.author?.name || 'Unknown'}</p>
+                ${blog.author?.name === getUsernameByToken() ? `<i onclick="deleteBlog(${blog.blogId})" 
+                style="cursor: pointer;" 
+                class="fa-solid fa-trash"></i>` : ""}
+                
+
 
             </div>
             <div class="blog-post-subject">
@@ -132,7 +141,8 @@ function createBlogBox(blog) {
                     </ul>
                 </div>
                 <div class="blog-see-all-comments"></div>
-                <div class="blog-add-comments">
+                ${getToken() !== null ? `   
+                                    <div class="blog-add-comments">
                             <form class="post-add-comment" data-blog-id="${blog.blogId}">
                             <label class="sr-only" for="comment-input-${blog.blogId}"></label>
                             <input class="comment-input" 
@@ -142,6 +152,8 @@ function createBlogBox(blog) {
                             placeholder="Add a comment…" />
                             <button class="btn" type="submit" id="add-comment">Send</button>
                         </form>
+                    ` : "" }
+
                 </div>
             </div>
         </div>
@@ -159,7 +171,7 @@ fetch(getAllBlogPostUrl)
         document.querySelectorAll('.blog-section').forEach(section => {
             const blogId = section.dataset.blogId;
             const commentsContainer = section.querySelector('.blog-see-all-comments');
-
+            const userAuthor = section.querySelector("p").dataset.blogName;
             fetch(`${findCommentsUrl}${blogId}`)
                 .then(res => res.json())
                 .then(comments => {
@@ -168,7 +180,11 @@ fetch(getAllBlogPostUrl)
                         return;
                     }
                     commentsContainer.innerHTML = comments
-                        .map(c => `<p id="${c.commentId}">${c.username}: <br> ${c.comment}<i onclick="deleteComment(${c.commentId})" style="cursor: pointer;" class="fa-solid fa-trash"></i></p>`)
+                        .map(c => `<p id="${c.commentId}">${c.username}: <br> ${c.comment}
+                            ${c.username === 
+                                getUsernameByToken() ? `<i onclick="deleteComment(${c.commentId})" 
+                            style="cursor: pointer;" class="fa-solid fa-trash"></i></p>` : ""}
+                            `)
                         .join('');
                         console.log(comments);
                 })
