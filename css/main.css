@@ -318,6 +318,7 @@ a {
     border-top: 1px solid var(--border);
     padding-top: 10px;
     margin-bottom: 8px;
+    cursor: pointer;
 }
 
 .blog-post-subject h2{
@@ -409,6 +410,14 @@ a {
     
 }
 
+[contenteditable="true"] {
+  caret-color: red;
+  background-color: rgba(114, 137, 218, 0.15);
+  border-radius: 10px;
+  outline: 2px dashed #7289da;
+  padding: 10px;
+}
+
 .btn .plus-sign {
     font-size: 25px;
 }
@@ -425,8 +434,9 @@ a {
     transition: transform 0.2s;
 }
 
-.blog-userInfo-logo .fa-solid {
+.actions {
     margin-left: auto;
+    cursor: pointer;
 }
 
 .btn:active {

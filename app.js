@@ -118,19 +118,19 @@ function createBlogBox(blog) {
             <div class="blog-userInfo-logo">
                 <a href="userprofile.html?id=${blog.author?.name}" target="_blank"> <img src="images/${blog.author?.imgPath || 'default.jpeg'}"></a>
                 <p data-blog-name=${blog.author?.name}>${blog.author?.name || 'Unknown'}</p>
-                ${blog.author?.name === getUsernameByToken() ? `<i onclick="deleteBlog(${blog.blogId})" 
-                style="cursor: pointer;" 
+                <div class="actions">
+                ${blog.author?.name === getUsernameByToken() ? `<i onclick="editBlog()" class="fa-solid fa-pen-to-square"></i> <i onclick="deleteBlog(${blog.blogId})" 
                 class="fa-solid fa-trash"></i>` : ""}
-                
-
-
+                </div>
             </div>
+            <div id="body">
             <div class="blog-post-subject">
-                <h2>${blog.subject}</h2>
-                <p>${blog.publishDate || ""}</p>
+                <a href="blogsite.html?id=${blog.blogId}"><h2>${blog.subject}</h2></a>
+                <p id="date">${blog.publishDate || ""}</p>
             </div>
             <div class="blog-post-body">
                 <pre>${blog.body}</pre>
+            </div>
             </div>
             <div class="blog-interaction">
                 <div class="blog-likes-section">
@@ -159,6 +159,17 @@ function createBlogBox(blog) {
         </div>
     </div>
     `;
+}
+
+function editBlog() {
+    const edit = document.getElementById("body");
+    const date = document.getElementById("date");
+    if(edit.contentEditable === "true") {
+        edit.contentEditable = "false";
+    } else {
+        edit.contentEditable = "true";
+        date.contentEditable = "false";
+    }
 }
 
 fetch(getAllBlogPostUrl)
