@@ -4,14 +4,31 @@ const userPanel = document.querySelector(".user-panel");
 const avatarLink = document.querySelector(".avatar-link");
 const avatarImg = document.querySelector(".avatar");
 const logoutBtn  = document.querySelector(".logout");
-const popupEl   = document.querySelector('#popup');            
-const formEl    = document.querySelector('.createblogpost');  
+const popupEl   = document.querySelector('#popup');
+const formEl    = document.querySelector('.createblogpost');
 const openBtn   = document.querySelector('[data-open="post"]');
-const closeBtn  = popupEl?.querySelector('[data-close]');      
+const closeBtn  = popupEl?.querySelector('[data-close]');
+const chatOpenBtn = document.querySelector('[data-open="test"');
+const chatpopUpEl = document.querySelector("#chatpopup");
+const chatCloseBtn =  chatpopUpEl?.querySelector('[data-close]');
 const submitBtn = formEl?.querySelector('[type="submit"]');
 const container = document.getElementById('blog-posts-container');
 const createBlogPostBtn = document.querySelector('.btn');
 const postBar = document.querySelector(".post-nav-bar");
+
+var username = null;
+var stompClient = null;
+var chatPage = document.querySelector('.chat-popup');
+var messageForm = document.querySelector('.chat-send-message');
+var messageInput = document.querySelector('#message');
+var messageArea = document.querySelector('#chat-message-area');
+var connectingElement = document.querySelector('.connecting');
+var connectUsername = document.querySelector('#open-chat');
+
+var colors = [
+    '#2196F3', '#32c787', '#00BCD4', '#ff5652',
+    '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
+];
 const saveblogUrl = 'http://localhost:8080/api/v1/blog/saveblogpost';
 const loginUrl = "http://localhost:8080/api/v1/users/auth/login";
 const getAllBlogPostUrl = 'http://localhost:8080/api/v1/blog/getallblogpost'
@@ -85,7 +102,7 @@ function renderAfterAuth() {
     const name = getUsernameByToken();
 
     const isLoggedIn = Boolean(token && name);
-    
+
     if(token && name) {
         if(form) form.style.display = "none";
         if(userPanel) userPanel.style.display = "flex";
@@ -98,13 +115,14 @@ function renderAfterAuth() {
             avatarImg.alt = name;
         }
 
-        if(navCenter) navCenter.style.visibility = "visible"; 
+        if(navCenter) navCenter.style.visibility = "visible";
     } else {
         if(form) form.style.display = "flex";
         if(userPanel) userPanel.style.display = "none";
         //if(navCenter) navCenter.style.visibility = "hidden";
         if(postBar) postBar.style.display = "none";
-        if(createBlogPostBtn) createBlogPostBtn.style.visibility = "none";
+        if(createBlogPostBtn) createBlogPostBtn.style.display = "none";
+        if(connectUsername) connectUsername.style.display = "none";
     }
 }
 
@@ -176,7 +194,7 @@ fetch(getAllBlogPostUrl)
     .then(res => res.json())
     .then(data => {
         console.log(data);
-  
+
         container.innerHTML = data.map(createBlogBox).join('');
 
         document.querySelectorAll('.blog-section').forEach(section => {
@@ -192,17 +210,17 @@ fetch(getAllBlogPostUrl)
                     }
                     commentsContainer.innerHTML = comments
                         .map(c => `<p id="${c.commentId}">${c.username}: <br> ${c.comment}
-                            ${c.username === 
-                                getUsernameByToken() ? `<i onclick="deleteComment(${c.commentId})" 
+                            ${c.username ===
+                        getUsernameByToken() ? `<i onclick="deleteComment(${c.commentId})" 
                             style="cursor: pointer;" class="fa-solid fa-trash"></i></p>` : ""}
                             `)
                         .join('');
-                        console.log(comments);
+                    console.log(comments);
                 })
                 .catch(err => {
-                    commentsContainer.innerHTML = `<p> Could not load comments </p>`
-                    console.error(err);
-                }
+                        commentsContainer.innerHTML = `<p> Could not load comments </p>`
+                        console.error(err);
+                    }
                 )
         });
         document.querySelectorAll('.post-add-comment').forEach(form => {
@@ -305,67 +323,183 @@ function addComment(event) {
 }
 
 function openPopup() {
-  if (!popupEl) return;
-  popupEl.classList.add('active');
-  document.addEventListener('keydown', escHandler);
+    if (!popupEl) return;
+    popupEl.classList.add('active');
+    document.addEventListener('keydown', escHandler);
 }
 
 function closePopup() {
-  if (!popupEl) return;
-  popupEl.classList.remove('active');
-  document.removeEventListener('keydown', escHandler);
-  formEl?.reset();
+    if (!popupEl) return;
+    popupEl.classList.remove('active');
+    document.removeEventListener('keydown', escHandler);
+    formEl?.reset();
 }
 
 function escHandler(e) {
-  if (e.key === 'Escape') closePopup();
+    if (e.key === 'Escape') closePopup();
 }
 
 openBtn?.addEventListener('click', (e) => {
-  e.preventDefault();
-  openPopup();
+    e.preventDefault();
+    openPopup();
 });
+
+chatOpenBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    chatOpenPopUp();
+});
+
+chatCloseBtn?.addEventListener('click', () => chatClosePopUp());
+
+function chatOpenPopUp() {
+    if(!chatpopUpEl) return;
+    chatpopUpEl.classList.add('active');
+    document.addEventListener('keydown', escHandler);
+}
+
+function chatClosePopUp() {
+    if(!chatpopUpEl) return;
+    chatpopUpEl.classList.remove('active');
+    document.removeEventListener('keydown', escHandler)
+}
 
 closeBtn?.addEventListener('click', () => closePopup());
 
 formEl?.addEventListener('submit', async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Saving...';
+    try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
 
-    const token = getToken();
-    if (!token) throw new Error('Du er ikke logget ind');
+        const token = getToken();
+        if (!token) throw new Error('Du er ikke logget ind');
 
-    const fd = new FormData(formEl);
-    fd.set('publishDate', date);
-    const payload = Object.fromEntries(fd);
+        const fd = new FormData(formEl);
+        fd.set('publishDate', date);
+        const payload = Object.fromEntries(fd);
 
-    const res = await fetch(saveblogUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+        const res = await fetch(saveblogUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
 
-    if (!res.ok) {
-      const msg = await res.text();
-      throw new Error(msg || `Fejl: ${res.status}`);
+        if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || `Fejl: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log('Gemte:', data);
+
+        closePopup();
+
+    } catch (err) {
+        console.error(err);
+        alert(err.message || 'Noget gik galt');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create blog post';
+    }
+});
+
+function connect(event) {
+    username = "hej"
+
+    if(username) {
+        var socket = new SockJS('/ws');
+        console.log(socket);
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, onConnected, onError);
+    }
+    event.preventDefault();
+}
+
+function onConnected() {
+    stompClient.subscribe('/topic/public', onMessageReceived);
+
+    stompClient.send("/app/chat.addUser", {},
+        JSON.stringify({sender: username, type: 'JOIN'})
+    )
+
+    connectingElement.classList.add('hidden');
+}
+
+function onError(error) {
+
+}
+
+function sendMessage(event) {
+    var messageContent = messageInput.value.trim();
+    if(messageContent && stompClient) {
+        var chatMessage = {
+            sender: username,
+            content: messageInput.value,
+            type: 'CHAT'
+        };
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+        messageInput.value = '';
+    }
+    event.preventDefault();
+}
+
+function getAvatarColor(messageSender) {
+    var hash = 0;
+    for (var i = 0; i < messageSender.length; i++) {
+        hash = 31 * hash + messageSender.charCodeAt(i);
+    }
+    var index = Math.abs(hash % colors.length);
+    return colors[index];
+}
+
+function onMessageReceived(payload) {
+    var message = JSON.parse(payload.body);
+    var messageElement = document.createElement('li');
+
+    if(message.type === 'JOIN' || message.type === 'LEAVE') {
+        messageElement.classList.add('event-message');
+        const p = document.createElement('p');
+        p.textContent = message.type === 'JOIN' ? `${message.sender} joined!` : `${message.sender} left!`;
+        messageElement.appendChild(p);
+    } else {
+        messageElement.classList.add('chat-message');
+
+        var avatarElement = document.createElement('i');
+        var avatarText = document.createTextNode(message.sender[0]);
+        avatarElement.appendChild(avatarText);
+        avatarElement.text = (message.sender || '?')[0].toUpperCase();
+        avatarElement.style.backgroundColor = getAvatarColor(message.sender || 'unknown');
+
+        const header = document.createElement('div')
+        header.classList.add('chat-header-row');
+        const name = document.createElement('span');
+        name.classList.add('chat-username');
+        name.textContent = message.sender || 'Unknown';
+        header.appendChild(name);
+
+        const text = document.createElement('p');
+        text.classList.add('chat-text');
+        text.textContent = message.content || '';
+
+        const body = document.createElement('div');
+        body.classList.add('chat-body');
+        body.appendChild(header);
+        body.appendChild(text);
+
+        messageElement.appendChild(avatarElement)
+        messageElement.appendChild(body);
     }
 
-    const data = await res.json();
-    console.log('Gemte:', data);
+    messageArea.appendChild(messageElement);
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
 
-    closePopup();
+console.log(connectUsername);
 
-  } catch (err) {
-    console.error(err);
-    alert(err.message || 'Noget gik galt');
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Create blog post';
-  }
-});
+connectUsername.addEventListener('click', connect, true);
+messageForm.addEventListener('submit', sendMessage, true);
