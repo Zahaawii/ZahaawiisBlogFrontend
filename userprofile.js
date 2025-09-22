@@ -50,7 +50,7 @@ fetch("http://localhost:8080/api/v1/blog/getbyusername/" + username)
                     commentsContainer.innerHTML = comments
                         .map(c => `<p>${c.username}: <br> ${c.comment}
                             ${c.username ===
-                                getUsernameByToken() ? `<i onclick="deleteComment(${c.commentId})" 
+                        getUsernameByToken() ? `<i onclick="deleteComment(${c.commentId})" 
                             style="cursor: pointer;" class="fa-solid fa-trash"></i></p>` : ""}
                             `)
                         .join('');

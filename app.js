@@ -3,14 +3,14 @@ const navCenter = document.querySelector(".nav-center");
 const userPanel = document.querySelector(".user-panel");
 const avatarLink = document.querySelector(".avatar-link");
 const avatarImg = document.querySelector(".avatar");
-const logoutBtn  = document.querySelector(".logout");
-const popupEl   = document.querySelector('#popup');
-const formEl    = document.querySelector('.createblogpost');
-const openBtn   = document.querySelector('[data-open="post"]');
-const closeBtn  = popupEl?.querySelector('[data-close]');
+const logoutBtn = document.querySelector(".logout");
+const popupEl = document.querySelector('#popup');
+const formEl = document.querySelector('.createblogpost');
+const openBtn = document.querySelector('[data-open="post"]');
+const closeBtn = popupEl?.querySelector('[data-close]');
 const chatOpenBtn = document.querySelector('[data-open="test"');
 const chatpopUpEl = document.querySelector("#chatpopup");
-const chatCloseBtn =  chatpopUpEl?.querySelector('[data-close]');
+const chatCloseBtn = chatpopUpEl?.querySelector('[data-close]');
 const submitBtn = formEl?.querySelector('[type="submit"]');
 const container = document.getElementById('blog-posts-container');
 const createBlogPostBtn = document.querySelector('.btn');
@@ -22,7 +22,7 @@ var chatPage = document.querySelector('.chat-popup');
 var messageForm = document.querySelector('.chat-send-message');
 var messageInput = document.querySelector('#message');
 var messageArea = document.querySelector('#chat-message-area');
-var connectingElement = document.querySelector('.connecting');
+var connectingElement = document.querySelector('.connection');
 var connectUsername = document.querySelector('#open-chat');
 
 var colors = [
@@ -36,6 +36,7 @@ const findCommentsUrl = "http://localhost:8080/api/v1/comments/getcomment/"
 const addCommentsUrl = "http://localhost:8080/api/v1/comments/addcomment"
 const deleteCommentsUrl = "http://localhost:8080/api/v1/comments/delete/"
 const deleteBlogUrl = 'http://localhost:8080/api/v1/blog/deletepost/'
+const updateUrl = 'http://localhost:8080/api/v1/blog/update/'
 
 
 logoutBtn?.addEventListener("click", logout);
@@ -55,7 +56,16 @@ form?.addEventListener("submit", async (event) => {
             body: JSON.stringify(creds)
         });
 
-        if (!res.ok) throw new Error(`Login failed: ${res.status}`);
+        if (!res.ok) {
+            document.querySelector('.js_username').style.color = "red";
+            document.querySelector('.js_password').style.color = "red";
+            const container = document.querySelector(".wrong-credentials");
+            const wrongPassword = document.createElement('p');
+            wrongPassword.classList.add('wrong-password');
+            wrongPassword.innerText = 'Wrong username or password';
+            container.appendChild(wrongPassword);
+            throw new Error(`Login failed: ${res.status}`);
+        }
 
         const { accessToken, username } = await res.json();
         if (!accessToken) throw new Error("Intet token i respons");
@@ -74,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 window.addEventListener("storage", (e) => {
-    if(e.key === "accessToken" || e.key === "username") {
+    if (e.key === "accessToken" || e.key === "username") {
         renderAfterAuth();
     }
 });
@@ -103,26 +113,30 @@ function renderAfterAuth() {
 
     const isLoggedIn = Boolean(token && name);
 
-    if(token && name) {
-        if(form) form.style.display = "none";
-        if(userPanel) userPanel.style.display = "flex";
+    if (token && name) {
+        if (form) form.style.display = "none";
+        if (userPanel) userPanel.style.display = "flex";
+        if (connectUsername) connectUsername.style.display = "grid";
+        if (createBlogPostBtn) createBlogPostBtn.style.display = "flex";
+        if (postBar) postBar.style.display = "flex";
 
-        if(avatarLink) {
+
+        if (avatarLink) {
             avatarLink.href = `userprofile.html?id=${encodeURIComponent(name)}`;
         }
-        if(avatarImg) {
+        if (avatarImg) {
             avatarImg.src = `images/${encodeURIComponent(name)}.jpeg`;
             avatarImg.alt = name;
         }
 
-        if(navCenter) navCenter.style.visibility = "visible";
+        if (navCenter) navCenter.style.visibility = "visible";
     } else {
-        if(form) form.style.display = "flex";
-        if(userPanel) userPanel.style.display = "none";
+        if (form) form.style.display = "flex";
+        if (userPanel) userPanel.style.display = "none";
         //if(navCenter) navCenter.style.visibility = "hidden";
-        if(postBar) postBar.style.display = "none";
-        if(createBlogPostBtn) createBlogPostBtn.style.display = "none";
-        if(connectUsername) connectUsername.style.display = "none";
+        if (postBar) postBar.style.display = "none";
+        if (createBlogPostBtn) createBlogPostBtn.style.display = "none";
+        if (connectUsername) connectUsername.style.display = "none";
     }
 }
 
@@ -135,19 +149,19 @@ function createBlogBox(blog) {
         <div class="blog-box">
             <div class="blog-userInfo-logo">
                 <a href="userprofile.html?id=${blog.author?.name}" target="_blank"> <img src="images/${blog.author?.imgPath || 'default.jpeg'}"></a>
-                <p data-blog-name=${blog.author?.name}>${blog.author?.name || 'Unknown'}</p>
-                <div class="actions">
-                ${blog.author?.name === getUsernameByToken() ? `<i onclick="editBlog()" class="fa-solid fa-pen-to-square"></i> <i onclick="deleteBlog(${blog.blogId})" 
+                <p id="${blog.blogId}-author" data-blog-name=${blog.author?.name}>${blog.author?.name || 'Unknown'}</p>
+                <div class="actions" id="${blog.blogId}-actions">
+                ${blog.author?.name === getUsernameByToken() ? `<i onclick="editBlog(${blog.blogId})" class="fa-solid fa-pen-to-square"></i> <i onclick="deleteBlog(${blog.blogId})" 
                 class="fa-solid fa-trash"></i>` : ""}
                 </div>
             </div>
             <div id="body">
             <div class="blog-post-subject">
                 <a href="blogsite.html?id=${blog.blogId}"><h2>${blog.subject}</h2></a>
-                <p id="date">${blog.publishDate || ""}</p>
+                <p id="${blog.blogId}-date">${blog.publishDate || ""}</p>
             </div>
             <div class="blog-post-body">
-                <pre>${blog.body}</pre>
+                <pre id="${blog.blogId}-body" class="body-test">${blog.body}</pre>
             </div>
             </div>
             <div class="blog-interaction">
@@ -170,7 +184,7 @@ function createBlogBox(blog) {
                             placeholder="Add a comment…" />
                             <button class="btn" type="submit" id="add-comment">Send</button>
                         </form>
-                    ` : "" }
+                    ` : ""}
 
                 </div>
             </div>
@@ -179,15 +193,44 @@ function createBlogBox(blog) {
     `;
 }
 
-function editBlog() {
-    const edit = document.getElementById("body");
-    const date = document.getElementById("date");
-    if(edit.contentEditable === "true") {
+function editBlog(id) {
+    const edit = document.getElementById(id);
+    const date = document.getElementById(id + "-date");
+    const author = document.getElementById(id + "-author");
+    if (edit.contentEditable === "true") {
         edit.contentEditable = "false";
     } else {
         edit.contentEditable = "true";
         date.contentEditable = "false";
+        author.contentEditable = "false";
+        const saveButton = document.getElementById(id + "-actions");
+        const button = document.createElement("button");
+        button.classList.add("btn");
+        saveButton.appendChild(button);
+        button.addEventListener('click', () => testBody(id));
     }
+}
+
+
+function testBody(id) {
+    const input = document.getElementById(id + "-body");
+    const value = input.textContent;
+    console.log(JSON.stringify(value));
+    const token = getToken();
+    fetch(updateUrl + id, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-type': 'application/json',
+
+        },
+        body: JSON.stringify(value)
+    })
+        .then(res => res.text())
+        .then(data => {
+            console.log("Postopdateret : " + data)
+        })
+        .catch(error => console.error("Kunne ikke slette: " + error));
 }
 
 fetch(getAllBlogPostUrl)
@@ -211,16 +254,16 @@ fetch(getAllBlogPostUrl)
                     commentsContainer.innerHTML = comments
                         .map(c => `<p id="${c.commentId}">${c.username}: <br> ${c.comment}
                             ${c.username ===
-                        getUsernameByToken() ? `<i onclick="deleteComment(${c.commentId})" 
+                                getUsernameByToken() ? `<i onclick="deleteComment(${c.commentId})" 
                             style="cursor: pointer;" class="fa-solid fa-trash"></i></p>` : ""}
                             `)
                         .join('');
                     console.log(comments);
                 })
                 .catch(err => {
-                        commentsContainer.innerHTML = `<p> Could not load comments </p>`
-                        console.error(err);
-                    }
+                    commentsContainer.innerHTML = `<p> Could not load comments </p>`
+                    console.error(err);
+                }
                 )
         });
         document.querySelectorAll('.post-add-comment').forEach(form => {
@@ -245,7 +288,7 @@ fetch(getAllBlogPostUrl)
     });
 
 function deleteComment(id) {
-    if(!confirm("Are you sure?")) return;
+    if (!confirm("Are you sure?")) return;
     const token = getToken();
     fetch(deleteCommentsUrl + id, {
         method: 'DELETE',
@@ -262,7 +305,7 @@ function deleteComment(id) {
 }
 
 function deleteBlog(id) {
-    if(!confirm("Are you sure?")) return;
+    if (!confirm("Are you sure?")) return;
     const token = getToken();
     console.log(document.getElementById(id));
     fetch(deleteBlogUrl + id, {
@@ -352,13 +395,13 @@ chatOpenBtn?.addEventListener('click', (e) => {
 chatCloseBtn?.addEventListener('click', () => chatClosePopUp());
 
 function chatOpenPopUp() {
-    if(!chatpopUpEl) return;
+    if (!chatpopUpEl) return;
     chatpopUpEl.classList.add('active');
     document.addEventListener('keydown', escHandler);
 }
 
 function chatClosePopUp() {
-    if(!chatpopUpEl) return;
+    if (!chatpopUpEl) return;
     chatpopUpEl.classList.remove('active');
     document.removeEventListener('keydown', escHandler)
 }
@@ -408,9 +451,9 @@ formEl?.addEventListener('submit', async (e) => {
 });
 
 function connect(event) {
-    username = "hej"
+    username = getUsernameByToken();
 
-    if(username) {
+    if (username) {
         var socket = new SockJS('/ws');
         console.log(socket);
         stompClient = Stomp.over(socket);
@@ -424,7 +467,7 @@ function onConnected() {
     stompClient.subscribe('/topic/public', onMessageReceived);
 
     stompClient.send("/app/chat.addUser", {},
-        JSON.stringify({sender: username, type: 'JOIN'})
+        JSON.stringify({ sender: username, type: 'JOIN' })
     )
 
     connectingElement.classList.add('hidden');
@@ -436,7 +479,7 @@ function onError(error) {
 
 function sendMessage(event) {
     var messageContent = messageInput.value.trim();
-    if(messageContent && stompClient) {
+    if (messageContent && stompClient) {
         var chatMessage = {
             sender: username,
             content: messageInput.value,
@@ -461,7 +504,7 @@ function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
     var messageElement = document.createElement('li');
 
-    if(message.type === 'JOIN' || message.type === 'LEAVE') {
+    if (message.type === 'JOIN' || message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
         const p = document.createElement('p');
         p.textContent = message.type === 'JOIN' ? `${message.sender} joined!` : `${message.sender} left!`;

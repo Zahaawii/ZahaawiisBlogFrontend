@@ -1053,13 +1053,21 @@ a {
     left: auto;
     top: auto;
     transition: transform 0.2s;
-    transition: transform .15s ease;
     border-radius: 100%;
     box-shadow: -1px 1px 104px -35px rgba(255,255,255,1);
--webkit-box-shadow: -1px 1px 104px -35px rgba(255,255,255,1);
--moz-box-shadow: -1px 1px 104px -35px rgba(255,255,255,1);
+    -webkit-box-shadow: -1px 1px 104px -35px rgba(255,255,255,1);
+    -moz-box-shadow: -1px 1px 104px -35px rgba(255,255,255,1);
 }
 
 #open-chat:active {
     transform: scale(0.95);
+}
+
+.wrong-credentials {
+    color: red;
+    position: absolute;
+    padding: 15px;
+    align-items: center;
+    margin-left: 30px;
+    gap: 10px;
 }
