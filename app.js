@@ -74,7 +74,6 @@ form?.addEventListener("submit", async (event) => {
         localStorage.setItem("username", username);
         renderAfterAuth();
     } catch (err) {
-        console.log(err);
     }
 });
 
@@ -155,13 +154,13 @@ function createBlogBox(blog) {
                 class="fa-solid fa-trash"></i>` : ""}
                 </div>
             </div>
-            <div id="body">
+            <div id="${blog.blogId}-body">
             <div class="blog-post-subject">
-                <a href="blogsite.html?id=${blog.blogId}"><h2>${blog.subject}</h2></a>
+                <a href="blogsite.html?id=${blog.blogId}" id="${blog.blogId}-subject"><h2>${blog.subject}</h2></a>
                 <p id="${blog.blogId}-date">${blog.publishDate || ""}</p>
             </div>
             <div class="blog-post-body">
-                <pre id="${blog.blogId}-body" class="body-test">${blog.body}</pre>
+                <pre id="${blog.blogId}-tekst" class="body-test">${blog.body}</pre>
             </div>
             </div>
             <div class="blog-interaction">
@@ -194,41 +193,56 @@ function createBlogBox(blog) {
 }
 
 function editBlog(id) {
-    const edit = document.getElementById(id);
-    const date = document.getElementById(id + "-date");
-    const author = document.getElementById(id + "-author");
-    if (edit.contentEditable === "true") {
-        edit.contentEditable = "false";
+    const editBody = document.getElementById(id +"-body");
+    const editDate = document.getElementById(id + "-date");
+    const saveButton = document.getElementById(id + "-actions");
+    const existing = saveButton.querySelector(".fa-paper-plane");
+    if (editBody.contentEditable === "true") {
+        editBody.contentEditable = "false";
+        editDate.contentEditable = "false";
+        existing.remove();
     } else {
-        edit.contentEditable = "true";
-        date.contentEditable = "false";
-        author.contentEditable = "false";
-        const saveButton = document.getElementById(id + "-actions");
-        const button = document.createElement("button");
-        button.classList.add("btn");
+        editBody.contentEditable = "true";
+        editDate.contentEditable = "false";
+
+        
+        if(existing) {
+            existing.remove();
+        } else {
+        const button = document.createElement(`i`);
+        button.classList.add("fa-solid", "fa-paper-plane");
         saveButton.appendChild(button);
-        button.addEventListener('click', () => testBody(id));
+        button.addEventListener('click', () => updateBlogPost(id));
+        }
+
     }
 }
 
 
-function testBody(id) {
-    const input = document.getElementById(id + "-body");
+function updateBlogPost(id) {
+    const input = document.getElementById(id + "-tekst");
+    const inputSubject = document.getElementById(id +"-subject");
     const value = input.textContent;
-    console.log(JSON.stringify(value));
+    const valueSubject = inputSubject.textContent;
     const token = getToken();
+    console.log(value);
     fetch(updateUrl + id, {
         method: 'PUT',
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-type': 'application/json',
-
         },
-        body: JSON.stringify(value)
+        body: value
     })
         .then(res => res.text())
         .then(data => {
-            console.log("Postopdateret : " + data)
+            console.log("Postopdateret : " + data);
+            const edit = document.getElementById(id + "-body");
+            const saveButton = document.getElementById(id + "-actions");
+            const existing = saveButton.querySelector(".fa-paper-plane");
+            edit.contentEditable ="false";
+            existing.remove();
+            
         })
         .catch(error => console.error("Kunne ikke slette: " + error));
 }
@@ -236,7 +250,6 @@ function testBody(id) {
 fetch(getAllBlogPostUrl)
     .then(res => res.json())
     .then(data => {
-        console.log(data);
 
         container.innerHTML = data.map(createBlogBox).join('');
 
@@ -258,7 +271,6 @@ fetch(getAllBlogPostUrl)
                             style="cursor: pointer;" class="fa-solid fa-trash"></i></p>` : ""}
                             `)
                         .join('');
-                    console.log(comments);
                 })
                 .catch(err => {
                     commentsContainer.innerHTML = `<p> Could not load comments </p>`
@@ -299,7 +311,6 @@ function deleteComment(id) {
         .then(res => res.text())
         .then(data => {
             document.getElementById(id).remove();
-            console.log("kommentar slettet: " + data)
         })
         .catch(error => console.error("Kunne ikke slette: " + error));
 }
@@ -307,7 +318,6 @@ function deleteComment(id) {
 function deleteBlog(id) {
     if (!confirm("Are you sure?")) return;
     const token = getToken();
-    console.log(document.getElementById(id));
     fetch(deleteBlogUrl + id, {
         method: 'DELETE',
         headers: {
@@ -317,7 +327,6 @@ function deleteBlog(id) {
         .then(res => res.text())
         .then(data => {
             document.getElementById(id).remove();
-            console.log("Blog post deleted " + data);
         })
         .catch(error => console.error("Kunne ikke slette: " + error));
 }
@@ -359,7 +368,6 @@ function addComment(event) {
     })
         .then(res => res.json())
         .then(data => {
-            console.log("Kommentar tilføjes: ", data);
             input.value = "";
         })
         .catch(error => console.error("fejl ved kommentar: ", error));
@@ -437,7 +445,6 @@ formEl?.addEventListener('submit', async (e) => {
         }
 
         const data = await res.json();
-        console.log('Gemte:', data);
 
         closePopup();
 
