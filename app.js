@@ -166,9 +166,12 @@ function createBlogBox(blog) {
             <div class="blog-interaction">
                 <div class="blog-likes-section">
                     <ul>
-                        <li><a href="#" class="interaction"><i class="fa-regular fa-thumbs-up"></i></a></li>
-                        <li><a href="#" class="interaction"><i class="fa-regular fa-comments"></i></a></li>
-                        <li><a href="#" class="interaction"><i class="fa-regular fa-share-from-square"></i></a></li>
+                        <li><p class="interaction"><i class="fa-regular fa-thumbs-up"></i></a></li>
+                        <li><p class="interaction" onclick="scrollToComment(${blog.blogId})"><i class="fa-regular fa-comments"></i></a></li>
+                        <li><p class="interaction" onclick="copyUrl(${blog.blogId})"><i class="fa-regular fa-share-from-square"></i></p></li>
+                        <div class="urlcopied">
+                        <span> Blog link has been copied to your clipboard </span>
+                        </div>
                     </ul>
                 </div>
                 <div class="blog-see-all-comments"></div>
@@ -190,6 +193,12 @@ function createBlogBox(blog) {
         </div>
     </div>
     `;
+}
+
+function scrollToComment(id) {
+    const commentIcon = document.getElementById("comment-input-" + id);
+
+    commentIcon.focus();
 }
 
 function editBlog(id) {
@@ -548,6 +557,26 @@ function onMessageReceived(payload) {
     messageArea.appendChild(messageElement);
     messageArea.scrollTop = messageArea.scrollHeight;
 }
+
+function copyUrl(id) {
+    const copyLink = "http://127.0.0.1:5501/blogsite.html?id=" + id;
+    navigator.clipboard.writeText(copyLink);
+    const test = document.querySelector(".urlcopied");
+    test.style.display = "flex";
+    test.classList.remove("fade-out");
+    test.classList.add("fade-in");
+
+    setTimeout(() => {
+        test.classList.remove("fade-in");
+        test.classList.add("fade-out");
+    }, 2000);
+
+    setTimeout(() => {
+        test.style.display = "none";
+        test.classList.remove("fade-out");
+    }, 3000);
+}
+
 
 console.log(connectUsername);
 

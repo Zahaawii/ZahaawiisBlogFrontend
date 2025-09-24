@@ -372,6 +372,22 @@ a {
     color: var(--accent);
 }
 
+.urlcopied {
+    display: none;
+    margin-top: 20px;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+.urlcopied.fade-in {
+    opacity: 1;
+}
+
+
+.urlcopied.fade-out {
+    opacity: 0;
+}
+
 .blog-likes-section .interaction:hover {
     border-color: var(--accent);
     color: var(--accent);
