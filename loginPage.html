@@ -52,7 +52,7 @@
 
       <div class="icons">
         <a href="#" class="fa fa-apple"></a>
-        <a href="http://localhost:8080/api/v1/users/auth/login/github" target="_blank" class="fa fa-github"></a>
+        <a href="" target="_blank" class="fa fa-github"></a>
         <a href="#" class="fa fa-google"></a>
         <a href="#" class="fa fa-reddit"></a>
         <a href="#" class="fa fa-facebook"></a>
@@ -84,7 +84,7 @@
 
 
       try {
-        const res = await fetch("http://localhost:8080/api/v1/users/createuser", {
+        const res = await fetch("/api/v1/users/createuser", {
           method: "POST",
           headers: { "Content-type": "application/json" },
           body: JSON.stringify(payload)
@@ -102,7 +102,7 @@
         if (hasFile) {
           const fileFd = new FormData();
           fileFd.append('file', file);
-          const res2 = await fetch(`http://localhost:8080/api/v1/uploads/images/${id}`, {
+          const res2 = await fetch(`/api/v1/uploads/images/${id}`, {
             method: "POST",
             headers: {
               'Authorization': 'Bearer ' + accessToken,
@@ -112,7 +112,7 @@
           if (!imgRes.ok) throw new Error(`Image failed: ${imgRes.status}`);
         }
 
-        window.location.replace('http://127.0.0.1:5501/');
+        window.location.replace('http://128.199.49.78/');
       } catch (err) {
         console.log(err);
       }

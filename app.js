@@ -559,7 +559,7 @@ function onMessageReceived(payload) {
 }
 
 function copyUrl(id) {
-    const copyLink = "http://127.0.0.1:5501/blogsite.html?id=" + id;
+    const copyLink = "/blogsite.html?id=" + id;
     navigator.clipboard.writeText(copyLink);
     const test = document.querySelector(".urlcopied");
     test.style.display = "flex";

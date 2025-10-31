@@ -15,10 +15,10 @@ const logoutBtn = document.querySelector(".logout");
 const userprofilBlogecontainer = document.getElementById('userprofilecontainer');
 const userprofileInfo = document.getElementById('userprofileinfo');
 const createBlogPostBtn = document.querySelector('.btn');
-const deleteCommentsUrl = "http://localhost:8080/api/v1/comments/delete/"
-const deleteBlogUrl = 'http://localhost:8080/api/v1/blog/deletepost/'
-const loginUrl = "http://localhost:8080/api/v1/users/auth/login";
-const saveblogUrl = 'http://localhost:8080/api/v1/blog/saveblogpost';
+const deleteCommentsUrl = "/api/v1/comments/delete/"
+const deleteBlogUrl = '/api/v1/blog/deletepost/'
+const loginUrl = "/api/v1/users/auth/login";
+const saveblogUrl = '/api/v1/blog/saveblogpost';
 
 
 
@@ -30,7 +30,7 @@ window.addEventListener("load", () => {
     }
 });
 
-fetch("http://localhost:8080/api/v1/blog/getbyusername/" + username)
+fetch("/api/v1/blog/getbyusername/" + username)
     .then(res => res.json())
     .then(data => {
         userprofilBlogecontainer.innerHTML = data.map(createUserprofileBlogBox).join('');
@@ -39,7 +39,7 @@ fetch("http://localhost:8080/api/v1/blog/getbyusername/" + username)
             const commentsContainer = section.querySelector('.post-comments');
             console.log(data);
 
-            fetch(`http://localhost:8080/api/v1/comments/getcomment/${blogId}`)
+            fetch(`/api/v1/comments/getcomment/${blogId}`)
                 .then(res => res.json())
                 .then(comments => {
                     console.log(comments);
@@ -66,7 +66,7 @@ fetch("http://localhost:8080/api/v1/blog/getbyusername/" + username)
         console.error(err);
     });
 
-fetch("http://localhost:8080/api/v1/users/getuserbyname/" + username)
+fetch("/api/v1/users/getuserbyname/" + username)
     .then(res => res.json())
     .then(user => {
         userprofileInfo.querySelector(".userprofile-sidebar")?.remove();
