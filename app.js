@@ -29,14 +29,14 @@ var colors = [
     '#2196F3', '#32c787', '#00BCD4', '#ff5652',
     '#ffc107', '#ff85af', '#FF9800', '#39bbb0'
 ];
-const saveblogUrl = 'http://localhost:8080/api/v1/blog/saveblogpost';
-const loginUrl = "http://localhost:8080/api/v1/users/auth/login";
-const getAllBlogPostUrl = 'http://localhost:8080/api/v1/blog/getallblogpost'
-const findCommentsUrl = "http://localhost:8080/api/v1/comments/getcomment/"
-const addCommentsUrl = "http://localhost:8080/api/v1/comments/addcomment"
-const deleteCommentsUrl = "http://localhost:8080/api/v1/comments/delete/"
-const deleteBlogUrl = 'http://localhost:8080/api/v1/blog/deletepost/'
-const updateUrl = 'http://localhost:8080/api/v1/blog/update/'
+const saveblogUrl = '/api/v1/blog/saveblogpost';
+const loginUrl = "/api/v1/users/auth/login";
+const getAllBlogPostUrl = '/api/v1/blog/getallblogpost'
+const findCommentsUrl = "/api/v1/comments/getcomment/"
+const addCommentsUrl = "/api/v1/comments/addcomment"
+const deleteCommentsUrl = "/api/v1/comments/delete/"
+const deleteBlogUrl = '/api/v1/blog/deletepost/'
+const updateUrl = '/api/v1/blog/update/'
 
 
 logoutBtn?.addEventListener("click", logout);
