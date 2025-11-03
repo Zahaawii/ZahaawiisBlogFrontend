@@ -45,6 +45,18 @@ logoutBtn?.addEventListener("click", logout);
 form?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
+    // Clear any existing error message first
+    const existingError = document.querySelector(".wrong-password");
+    if (existingError) {
+        existingError.remove();
+    }
+
+    // Disable form inputs and button while checking credentials
+    const inputs = form.querySelectorAll('input');
+    const submitButton = form.querySelector('button');
+    inputs.forEach(input => input.disabled = true);
+    submitButton.disabled = true;
+
     const creds = Object.fromEntries(new FormData(form));
 
     try {
@@ -74,6 +86,9 @@ form?.addEventListener("submit", async (event) => {
         localStorage.setItem("username", username);
         renderAfterAuth();
     } catch (err) {
+        // Re-enable form after error
+        inputs.forEach(input => input.disabled = false);
+        submitButton.disabled = false;
     }
 });
 

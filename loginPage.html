@@ -68,6 +68,16 @@
     const form = document.querySelector('.createUser');
     console.log(form);
 
+      function showError(msg) {
+    const old = document.querySelector('.create-user-error');
+    if (old) old.remove();
+    const p = document.createElement('p');
+    p.className = 'create-user-error';
+    p.style.color = 'red';
+    p.textContent = msg;
+    form.appendChild(p);
+  }
+
     btn.addEventListener("click", async (event) => {
       event.preventDefault();
 
@@ -90,7 +100,17 @@
           body: JSON.stringify(payload)
         });
 
-        if (!res.ok) throw new Error(`Failed creating user: ${res.status}`);
+      if (!res.ok) {
+        // læs tekstrespons fra backend (fx "Username already exist")
+        const txt = await res.text();
+        if (txt && txt.toLowerCase().includes("username")) {
+          showError("Username already exist. Vælg et andet brugernavn.");
+        } else {
+          showError("Kunne ikke oprette bruger. Prøv igen.");
+        }
+        return;
+      }
+
 
         const {id, accessToken, name } = await res.json();
         if (!accessToken) throw new Error("Failed to log user in by default");
@@ -109,12 +129,13 @@
             },
             body: fileFd,
           });
-          if (!imgRes.ok) throw new Error(`Image failed: ${imgRes.status}`);
+          if (!res2.ok) throw new Error(`Image failed: ${res2.status}`);
         }
 
-        window.location.replace('http://128.199.49.78/');
+        window.location.replace('index.html');
       } catch (err) {
         console.log(err);
+        showError("An error occured, try again later");
       }
     });
 
