@@ -418,7 +418,7 @@ openBtn?.addEventListener('click', (e) => {
     e.preventDefault();
     openPopup();
 });
-
+    
 chatOpenBtn?.addEventListener('click', (e) => {
     e.preventDefault();
     chatOpenPopUp();
