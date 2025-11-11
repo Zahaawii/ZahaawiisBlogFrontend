@@ -1,4 +1,4 @@
-const url = "http://localhost:8181/api/"
+const url = "/api/"
 const form = document.querySelector(".question");
 const chatWindow = document.getElementById("chat-window");
 const textarea = form.querySelector("textarea, input[type='text']");
