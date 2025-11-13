@@ -26,6 +26,41 @@ const resetTextarea = () => {
     }
 };
 
+
+function getToken() {
+    return localStorage.getItem("accessToken");
+}
+
+function getUsernameByToken() {
+    return localStorage.getItem("username");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    renderAfterAuth();
+});
+
+window.addEventListener("storage", (e) => {
+    if (e.key === "accessToken" || e.key === "username") {
+        renderAfterAuth();
+    }
+});
+
+function renderAfterAuth() {
+    const token = getToken();
+    const name = getUsernameByToken();
+
+    const isLoggedIn = Boolean(token && name);
+
+    if(isLoggedIn) {
+        if(popupEl) form.style.display = "flex";
+
+    } else {
+        if(openBtn) form.style.display = "none";
+        if(popupEl) form.style.display = "none";
+    }
+}
+
+
 textarea?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         if (!e.shiftKey) {

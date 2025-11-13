@@ -45,17 +45,7 @@ logoutBtn?.addEventListener("click", logout);
 form?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    // Clear any existing error message first
-    const existingError = document.querySelector(".wrong-password");
-    if (existingError) {
-        existingError.remove();
-    }
-
-    // Disable form inputs and button while checking credentials
-    const inputs = form.querySelectorAll('input');
-    const submitButton = form.querySelector('button');
-    inputs.forEach(input => input.disabled = true);
-    submitButton.disabled = true;
+    document.querySelector(".wrong-password")?.remove();
 
     const creds = Object.fromEntries(new FormData(form));
 
@@ -71,6 +61,7 @@ form?.addEventListener("submit", async (event) => {
         if (!res.ok) {
             document.querySelector('.js_username').style.color = "red";
             document.querySelector('.js_password').style.color = "red";
+
             const container = document.querySelector(".wrong-credentials");
             const wrongPassword = document.createElement('p');
             wrongPassword.classList.add('wrong-password');
@@ -86,9 +77,7 @@ form?.addEventListener("submit", async (event) => {
         localStorage.setItem("username", username);
         renderAfterAuth();
     } catch (err) {
-        // Re-enable form after error
-        inputs.forEach(input => input.disabled = false);
-        submitButton.disabled = false;
+        console.error(err);
     }
 });
 
@@ -102,7 +91,6 @@ window.addEventListener("storage", (e) => {
         renderAfterAuth();
     }
 });
-
 
 
 function getToken() {
