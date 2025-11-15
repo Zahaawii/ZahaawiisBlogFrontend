@@ -52,11 +52,11 @@ function renderAfterAuth() {
     const isLoggedIn = Boolean(token && name);
 
     if(isLoggedIn) {
-        if(popupEl) form.style.display = "flex";
+        if(popupEl) popupEl.style.display = "flex";
 
     } else {
-        if(openBtn) form.style.display = "none";
-        if(popupEl) form.style.display = "none";
+        if(openBtn) openBtn.style.display = "none";
+        if(popupEl) popupEl.style.display = "none";
     }
 }
 
