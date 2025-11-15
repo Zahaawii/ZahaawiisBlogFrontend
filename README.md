@@ -1,4 +1,4 @@
-# Zahaawii Blog – Project README
+# Zahaawii Blog
 
 A personal blog platform built as a full-stack web application.  
 The project focuses on clean architecture, secure authentication, and a maintainable codebase suitable for real deployment.
